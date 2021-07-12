@@ -1,0 +1,37 @@
+{label icon,desc icon,figure[{src '../node_modules/@ddu6/stui/imgs/st.svg',style max-width:100px,img[]}]}
+{title[Demo]}
+{global,level 3,corollary[]}
+{css './css.urls',tag-to-unit-compiler './1/uc.urls',global[]}
+{contents[]}
+[]
+{label eg,heading[Examples]}
+[{name DDU,hi[]}' Here are some interesting examples.']
+[]
+{label eq,level 2,heading[Equation]}
+{'a_1=1'}
+{display,'a_2=2'}
+['Let '{'a_3=3'}.]
+{label eq1,equation[{'a_4=4'}]}
+{label eq2,orbit alone,mark{[[{label eq1,class plain,ref[]}{'\''}]]},equation[{'a_5=5'}]}
+{class display,aligned[
+    ['a_6&=6\ \text{see '{label eq2,ref[]}'}\\\\']
+    'a_{1000}&=1000'
+]}
+['See more in '{label th,ref[]}.]
+[]
+{label th,level 2,heading[Theorem]}
+{label th1,mark A,desc DDU,theorem[STDN is easy to use.]}
+{proof[We leave it to the reader.]}
+{label co1,corollary[{label eq3,orbit alone,mark{'\square'},class plain,equation[STDN is a good language.]}]}
+['See '{label article,ref[]}' for more.']
+[]
+{label code,level 2,heading[Code]}
+['In '{lang non,code[3.unit.css]}', we set']
+{code[
+    '.unit.warn{'
+    '    color:red'
+    '}'
+]}
+[]
+{label ref,heading[References]}
+{label article,orbit article,block,index[Introduction to STDN. DDU.]}
