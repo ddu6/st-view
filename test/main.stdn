@@ -1,13 +1,15 @@
 {label icon,desc icon,figure[{src '../node_modules/@ddu6/stui/imgs/st.svg',style max-width:100px,img[]}]}
 {title[Demo]}
 {global,level 3,corollary[]}
+{global,'\def\P{\mathbb P}'}
+{global,'\def\C{\mathbb C}'}
 {contents[]}
 []
 {label eg,heading[Examples]}
 [{name DDU,hi[]}' Here are some interesting examples.']
 []
 {label eq,level 2,heading[Equation]}
-{'a_1=1'}
+{'\C\P^1\cong S^1'}
 {display,'a_2=2'}
 ['Let '{'a_3=3'}.]
 {label eq1,equation[{'a_4=4'}]}
