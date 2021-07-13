@@ -1,16 +1,76 @@
-import {Div,LRStruct} from '@ddu6/stui'
+import {Checkbox, Div,Form,FormLine,LRStruct} from '@ddu6/stui'
 import {multiCompile} from '@ddu6/stc'
 import {css,tagToUnitCompiler} from 'st-std'
 import {isRelURL,relURLToAbsURL,urlsToAbsURLs} from '@ddu6/urls'
 import {all} from './lib/css'
 import {extractHeadingTree,headingTreeToElement} from './heading-tree'
 export class Viewer extends LRStruct{
+    readonly customStyleEle=document.createElement('style')
     readonly article=new Div(['article'])
     readonly headingTree=new Div(['heading tree'])
+    readonly selects={
+        colorScheme:document.createElement('select'),
+        fontSize:document.createElement('select'),
+    }
+    readonly checkboxes={
+        settings:new Checkbox('settings',['show name','left']),
+    }
+    readonly forms={
+        panel:new Form('panel'),
+        settings:new Form('settings',['hide']),
+    }
     constructor(){
         super('Viewer','',css+all)
+        document.body.append(this.customStyleEle)
         this.main.append(this.article)
-        this.sideContent.append(this.headingTree)
+        this.sideContent
+        .append(this.headingTree)
+        .append(
+            this.forms.panel
+            .append(this.checkboxes.settings)
+            .append(
+                this.forms.settings
+                .append(
+                    new FormLine('color scheme')
+                    .append(this.selects.colorScheme)
+                )
+                .append(
+                    new FormLine('font size')
+                    .append(this.selects.fontSize)
+                )
+            )
+        )
+        this.selects.colorScheme.innerHTML='<option>auto</option><option>dark</option><option>light</option>'
+        this.selects.fontSize.innerHTML='<option>small</option><option>medium</option><option>large</option>'
+        document.body.dataset.colorScheme
+        =this.selects.colorScheme.value
+        =window.localStorage.getItem('st-color-scheme')
+        ??document.body.dataset.colorScheme
+        ??'auto'
+        document.body.dataset.fontSize
+        =this.selects.fontSize.value
+        =window.localStorage.getItem('st-font-size')
+        ??document.body.dataset.fontSize
+        ??'small'
+        this.selects.colorScheme.addEventListener('input',()=>{
+            window.localStorage.setItem(
+                'st-color-scheme',
+                document.body.dataset.colorScheme=this.selects.colorScheme.value
+            )
+        })
+        this.selects.fontSize.addEventListener('input',()=>{
+            window.localStorage.setItem(
+                'st-font-size',
+                document.body.dataset.fontSize=this.selects.fontSize.value
+            )
+        })
+        this.checkboxes.settings.addEventListener('click',()=>{
+            if(this.checkboxes.settings.classList.toggle('checked')){
+                this.forms.settings.classList.remove('hide')
+            }else{
+                this.forms.settings.classList.add('hide')
+            }
+        })
         const params=new URLSearchParams(document.location.search)
         const src=params.get('src')??document.body.dataset.src??''
         if(src===''){
@@ -21,7 +81,12 @@ export class Viewer extends LRStruct{
         if(!isFinite(focusLine)){
             focusLine=0
         }
-        const focusLabel=params.get('focus-label')??document.body.dataset.focusLabel??''
+        let focusLabel=document.location.hash
+        if(focusLabel===''){
+            focusLabel=document.body.dataset.focusLabel??''
+        }else if(focusLabel.startsWith('#'))(
+            focusLabel=focusLabel.slice(1)
+        )
         this.load([src],focusURL,focusLine,focusLabel)
     }
     async load(urls:string[],focusURL='',focusLine=0,focusLabel=''){
@@ -49,13 +114,14 @@ export class Viewer extends LRStruct{
             dftTagToUnitCompiler:tagToUnitCompiler
         })
         document.title=context.title
+        this.customStyleEle.textContent=context.css
         this.article.element.innerHTML=''
         this.article.append(documentFragment)
         this.headingTree.element.innerHTML=''
         this.headingTree.append(headingTreeToElement(extractHeadingTree(context)))
         if(
             parts.length===0
-            ||documentFragment.children.length===0
+            ||this.article.children.length===0
         ){
             return
         }
@@ -81,12 +147,12 @@ export class Viewer extends LRStruct{
         }
         if(focusLine<0){
             focusLine=0
-        }else if(focusLine>=documentFragment.children.length){
-            focusLine=documentFragment.children.length-1
+        }else if(focusLine>=this.article.children.length){
+            focusLine=this.article.children.length-1
         }
         let focusEle:Element=this.article.element
         if(focusLine!==0){
-            const div=documentFragment.children[focusLine]
+            const div=this.article.children[focusLine]
             if(div!==undefined){
                 focusEle=div
             }

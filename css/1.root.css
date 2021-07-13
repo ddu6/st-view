@@ -12,3 +12,12 @@
         padding: 0;
     }
 }
+
+.side>.content {
+    overflow: auto;
+    justify-content: space-between;
+}
+
+.side>.content>.panel {
+    padding: var(--length-padding);
+}

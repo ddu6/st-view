@@ -11,6 +11,15 @@ export const root=`.main>.article {
         margin: 0;
         padding: 0;
     }
+}
+
+.side>.content {
+    overflow: auto;
+    justify-content: space-between;
+}
+
+.side>.content>.panel {
+    padding: var(--length-padding);
 }`
 export const tree=`.heading-tree {
     padding: var(--length-padding);
