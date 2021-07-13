@@ -1,14 +1,16 @@
-import {Div, LRStruct} from '@ddu6/stui'
+import {Div,LRStruct} from '@ddu6/stui'
 import {multiCompile} from '@ddu6/stc'
 import {css,tagToUnitCompiler} from 'st-std'
-import {isRelURL, relURLToAbsURL, urlsToAbsURLs} from '@ddu6/urls'
+import {isRelURL,relURLToAbsURL,urlsToAbsURLs} from '@ddu6/urls'
 import {all} from './lib/css'
+import {extractHeadingTree,headingTreeToElement} from './heading-tree'
 export class Viewer extends LRStruct{
     readonly article=new Div(['article'])
-    readonly headingView=new Div(['heading view'])
+    readonly headingTree=new Div(['heading tree'])
     constructor(){
         super('Viewer','',css+all)
         this.main.append(this.article)
+        this.sideContent.append(this.headingTree)
         const params=new URLSearchParams(document.location.search)
         const src=params.get('src')??document.body.dataset.src??''
         if(src===''){
@@ -49,6 +51,8 @@ export class Viewer extends LRStruct{
         document.title=context.title
         this.article.element.innerHTML=''
         this.article.append(documentFragment)
+        this.headingTree.element.innerHTML=''
+        this.headingTree.append(headingTreeToElement(extractHeadingTree(context)))
         if(
             parts.length===0
             ||documentFragment.children.length===0

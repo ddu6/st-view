@@ -1,18 +1,4 @@
-export const root=`.main>.article {
-    padding: 0 var(--length-padding);
-    margin: 0 auto;
-    max-width: var(--length-width);
-    min-width: 100px;
-    margin-bottom: 100vh;
-}
-
-@media print {
-    .main>article {
-        margin: 0;
-        padding: 0;
-    }
-}`
-export const tree=`.heading-tree {
+.heading-tree {
     padding: var(--length-padding);
 }
 
@@ -49,5 +35,4 @@ export const tree=`.heading-tree {
 
 .heading-tree .tree.folded>.children {
     display: none;
-}`
-export const all=root+tree
+}
