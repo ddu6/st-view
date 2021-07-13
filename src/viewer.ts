@@ -1,7 +1,6 @@
 import {Checkbox, Div,Form,FormLine,LRStruct} from '@ddu6/stui'
-import {multiCompile} from '@ddu6/stc'
+import {isRelURL,relURLToAbsURL,urlsToAbsURLs,multiCompile} from '@ddu6/stc'
 import {css,tagToUnitCompiler} from 'st-std'
-import {isRelURL,relURLToAbsURL,urlsToAbsURLs} from '@ddu6/urls'
 import {all} from './lib/css'
 import {extractHeadingTree,headingTreeToElement} from './heading-tree'
 export class Viewer extends LRStruct{
