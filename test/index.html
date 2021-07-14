@@ -1,3 +1,8 @@
 <!DOCTYPE html>
 <body style="background:black" data-color-scheme="dark" data-src="./1/main.urls" data-focus-url="./main.stdn" data-focus-line=5></body>
 <script type="module" src="../dist/main.js"></script>
+<script type="module">
+    window.viewer.dblClickLineListeners.push((line,url,partialLine)=>{
+        console.log(line,url,partialLine)
+    })
+</script>

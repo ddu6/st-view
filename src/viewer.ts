@@ -18,6 +18,11 @@ export class Viewer extends LRStruct{
         panel:new Form('panel'),
         settings:new Form('settings',['hide']),
     }
+    dblClickLineListeners:((
+        line:number,
+        url:string,
+        partialLine:number,
+    )=>Promise<void>)[]=[]
     constructor(){
         super('Viewer','',css+all)
         document.body.append(this.customStyleEle)
@@ -123,6 +128,21 @@ export class Viewer extends LRStruct{
             ||this.article.children.length===0
         ){
             return
+        }
+        let line=0
+        for(let i=0;i<partLengths.length;i++){
+            const partLength=partLengths[i]
+            const {dir}=parts[i]
+            for(let partialLine=0;partialLine<partLength;partialLine++){
+                const lineEle=this.article.children[line]
+                const staticLine=line
+                lineEle.addEventListener('dblclick',async ()=>{
+                    for(const listener of this.dblClickLineListeners){
+                        await listener(staticLine,dir,partialLine)
+                    }
+                })
+                line++
+            }
         }
         let focusPart=0
         if(focusURL!==''){
