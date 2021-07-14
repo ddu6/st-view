@@ -152,7 +152,9 @@ export class Viewer extends LRStruct{
             for(let i=0;i<parts.length;i++){
                 const {dir}=parts[i]
                 try{
-                    if(new URL(focusURL).pathname===new URL(dir).pathname){
+                    const tmp0=new URL(focusURL)
+                    const tmp1=new URL(dir)
+                    if(tmp0.origin===tmp1.origin&&tmp0.pathname===tmp1.pathname){
                         focusPart=i
                         break
                     }
