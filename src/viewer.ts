@@ -46,26 +46,26 @@ export class Viewer extends LRStruct{
         )
         this.selects.colorScheme.innerHTML='<option>auto</option><option>dark</option><option>light</option>'
         this.selects.fontSize.innerHTML='<option>small</option><option>medium</option><option>large</option>'
-        document.body.dataset.colorScheme
+        document.documentElement.dataset.colorScheme
         =this.selects.colorScheme.value
         =window.localStorage.getItem('st-color-scheme')
-        ??document.body.dataset.colorScheme
+        ??document.documentElement.dataset.colorScheme
         ??'auto'
-        document.body.dataset.fontSize
+        document.documentElement.dataset.fontSize
         =this.selects.fontSize.value
         =window.localStorage.getItem('st-font-size')
-        ??document.body.dataset.fontSize
+        ??document.documentElement.dataset.fontSize
         ??'small'
         this.selects.colorScheme.addEventListener('input',()=>{
             window.localStorage.setItem(
                 'st-color-scheme',
-                document.body.dataset.colorScheme=this.selects.colorScheme.value
+                document.documentElement.dataset.colorScheme=this.selects.colorScheme.value
             )
         })
         this.selects.fontSize.addEventListener('input',()=>{
             window.localStorage.setItem(
                 'st-font-size',
-                document.body.dataset.fontSize=this.selects.fontSize.value
+                document.documentElement.dataset.fontSize=this.selects.fontSize.value
             )
         })
         this.checkboxes.settings.addEventListener('click',()=>{
@@ -76,18 +76,18 @@ export class Viewer extends LRStruct{
             }
         })
         const params=new URLSearchParams(document.location.search)
-        const src=params.get('src')??document.body.dataset.src??''
+        const src=params.get('src')??document.documentElement.dataset.src??''
         if(src===''){
             return
         }
-        const focusURL=params.get('focus-url')??document.body.dataset.focusUrl??''
-        let focusLine=Number(params.get('focus-line')??document.body.dataset.focusLine??'')
+        const focusURL=params.get('focus-url')??document.documentElement.dataset.focusUrl??''
+        let focusLine=Number(params.get('focus-line')??document.documentElement.dataset.focusLine??'')
         if(!isFinite(focusLine)){
             focusLine=0
         }
         let focusLabel=document.location.hash
         if(focusLabel===''){
-            focusLabel=document.body.dataset.focusLabel??''
+            focusLabel=document.documentElement.dataset.focusLabel??''
         }else if(focusLabel.startsWith('#'))(
             focusLabel=focusLabel.slice(1)
         )
