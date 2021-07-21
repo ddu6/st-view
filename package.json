@@ -1,5 +1,5 @@
 {
-  "version": "0.0.17",
+  "version": "0.0.18",
   "scripts": {
     "pkg": "node scripts/pkg-css.js",
     "build": "npm run pkg && webpack"
