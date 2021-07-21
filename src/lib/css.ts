@@ -37,7 +37,7 @@ export const tree=`.heading-tree {
     display: block;
     width: 1em;
     text-align: center;
-    content: "-";
+    content: "−";
 }
 
 .heading-tree .tree.folded>.data>.mark::before {
@@ -49,7 +49,7 @@ export const tree=`.heading-tree {
 }
 
 .heading-tree .children {
-    margin-left: .5em;
+    margin-left: calc(.5em - .5px);
     border-left: 1px solid var(--color-border);
 }
 
