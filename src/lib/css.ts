@@ -4,6 +4,7 @@ export const root=`.main>.article {
     max-width: var(--length-width);
     min-width: 100px;
     margin-bottom: 100vh;
+    display: flow-root;
 }
 
 @media print {
