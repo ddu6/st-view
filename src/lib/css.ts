@@ -7,7 +7,7 @@ export const root=`.main>.article {
 }
 
 @media print {
-    .main>article {
+    .main>.article {
         margin: 0;
         padding: 0;
     }
