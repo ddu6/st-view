@@ -85,7 +85,7 @@ export class Viewer extends LRStruct{
         if(!isFinite(focusLine)){
             focusLine=0
         }
-        let focusLabel=document.location.hash
+        let focusLabel=decodeURIComponent(document.location.hash)
         if(focusLabel===''){
             focusLabel=document.documentElement.dataset.focusLabel??''
         }else if(focusLabel.startsWith('#'))(
