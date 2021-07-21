@@ -25,10 +25,6 @@ export const tree=`.heading-tree {
     padding: var(--length-padding);
 }
 
-.heading-tree a[href] {
-    color: var(--color-text);
-}
-
 .heading-tree .data {
     display: flex;
     align-items: baseline;
