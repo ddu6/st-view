@@ -5,15 +5,15 @@
     "build": "npm run pkg && webpack"
   },
   "devDependencies": {
-    "@types/node": "^16.4.0",
+    "@types/node": "^16.4.1",
     "ts-loader": "^9.2.3",
     "typescript": "^4.3.5",
-    "webpack": "^5.45.1",
+    "webpack": "^5.46.0",
     "webpack-cli": "^4.7.2"
   },
   "dependencies": {
-    "@ddu6/stc": "^0.0.33",
-    "@ddu6/stui": "^0.0.21",
-    "st-std": "^0.0.24"
+    "@ddu6/stc": "^0.1.0",
+    "@ddu6/stui": "^0.0.24",
+    "st-std": "^0.0.25"
   }
 }

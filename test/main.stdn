@@ -28,8 +28,8 @@
 ['See '{label article,ref[]}' for more.']
 []
 {label code,level 2,heading[Code]}
-['In '{lang non,code[4.unit.css]}', we set']
-{code[
+['In '{code[4.unit.css]}', we set']
+{lang css,code[
     '.unit.warn{'
     '    color:red'
     '}'
