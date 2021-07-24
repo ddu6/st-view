@@ -28,11 +28,37 @@
 ['See '{label article,ref[]}' for more.']
 []
 {label code,level 2,heading[Code]}
-['In '{code[3.unit.css]}', we set']
-{lang css,code[
-    '.unit.warn{'
-    '    color:red'
+['Highlighting of '{code[css]}', '{code[html]}', '{code[js]}', '{code[md]}', '{code[ts]}' and st-langs are supported.']
+{lang markdown,code[
+    ```css
+    '.unit.warn {'
+    '    color: var(--color-warn);'
     '}'
+    ```
+]}
+{lang md,code[
+    # ts@next
+    ```ts
+    'class Text{'
+    '    constructor(array?:string[]){'
+    '        for(const item of array??[]){'
+    '            console.log(item)'
+    '        }'
+    '    }'
+    '}'
+    ```
+]}
+{global,vsce-gh James-Yu/LaTeX-Workshop,code[]}
+After setting
+{lang stdn,block,code[
+    '{global,vsce-gh James-Yu/LaTeX-Workshop,code[]}'
+]}
+latex can also be highlighted.
+{lang latex,code[
+    '\documentclass{article}'
+    '\begin{document}'
+    '    $a_n$'
+    '\end{document}'
 ]}
 []
 {label list,level 2,heading[List]}
