@@ -1,9 +1,10 @@
-import {Checkbox, Div,Form,FormLine,LRStruct} from '@ddu6/stui'
+import {Checkbox,Div,Form,FormLine,LRStruct} from '@ddu6/stui'
 import {isRelURL,relURLToAbsURL,urlsToAbsURLs,multiCompile} from '@ddu6/stc'
-import {css,tagToUnitCompiler} from 'st-std'
+import {css,headCSS,tagToUnitCompiler} from 'st-std'
 import {all} from './lib/css'
 import {extractHeadingTree,headingTreeToElement} from './heading-tree'
 export class Viewer extends LRStruct{
+    readonly headStyle=document.createElement('style')
     readonly customStyleEle=document.createElement('style')
     readonly article=new Div(['article'])
     readonly headingTree=new Div(['heading tree'])
@@ -25,6 +26,8 @@ export class Viewer extends LRStruct{
     )=>Promise<void>)[]=[]
     constructor(){
         super('Viewer','',css+all)
+        this.headStyle.textContent=headCSS
+        document.body.prepend(this.headStyle)
         document.body.append(this.customStyleEle)
         this.main.append(this.article)
         this.sideContent
