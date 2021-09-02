@@ -7,7 +7,7 @@
 []
 {div[
     []
-    {id eg,heading[Examples]}
+    {id eg, orbit heading, h2[Examples]}
 ]}
 [{name DDU,hi[]}' Here are some interesting examples.']
 []
