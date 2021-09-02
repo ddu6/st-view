@@ -88,15 +88,15 @@ export class Viewer extends LRStruct{
         if(!isFinite(focusLine)){
             focusLine=0
         }
-        let focusLabel=decodeURIComponent(document.location.hash)
-        if(focusLabel===''){
-            focusLabel=document.documentElement.dataset.focusLabel??''
-        }else if(focusLabel.startsWith('#'))(
-            focusLabel=focusLabel.slice(1)
+        let focusId=decodeURIComponent(document.location.hash)
+        if(focusId===''){
+            focusId=document.documentElement.dataset.focusId??''
+        }else if(focusId.startsWith('#'))(
+            focusId=focusId.slice(1)
         )
-        this.load([src],focusURL,focusLine,focusLabel)
+        this.load([src],focusURL,focusLine,focusId)
     }
-    async load(urls:string[],focusURL='',focusLine=0,focusLabel=''){
+    async load(urls:string[],focusURL='',focusLine=0,focusId=''){
         const absURLs=await urlsToAbsURLs(urls,document.location.href)
         const parts:{
             string:string
@@ -181,8 +181,8 @@ export class Viewer extends LRStruct{
                 focusEle=div
             }
         }
-        if(focusLabel!==''){
-            const anchor=focusEle.querySelector(`a[id=${JSON.stringify(focusLabel)}]`)
+        if(focusId!==''){
+            const anchor=focusEle.querySelector(`[id=${JSON.stringify(focusId)}]`)
             if(anchor!==null){
                 focusEle=anchor
             }

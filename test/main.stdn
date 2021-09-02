@@ -1,32 +1,32 @@
-{label icon,desc icon,figure[{src '../node_modules/@ddu6/stui/imgs/st.svg',style max-width:100px,img[]}]}
+{id icon,desc icon,figure[{src '../node_modules/@ddu6/stui/imgs/st.svg',style max-width:100px,img[]}]}
 {title[Demo]}
 {global,level 3,corollary[]}
 {global,'\def\C{\mathbb C}'}
 {global,'\def\P{\mathbb P}'}
 {css-src './css.urls',ucs-src './1/ucs.urls',global[]}
 []
-{label eg,heading[Examples]}
+{id eg,heading[Examples]}
 [{name DDU,hi[]}' Here are some interesting examples.']
 []
-{label eq,level 2,heading[Equation]}
+{id eq,level 2,heading[Equation]}
 {'\C\P^1\cong S^1'}
 {display,'a_2=2'}
 ['Let '{'a_3=3'}.]
-{label eq1,equation[{'a_4=4'}]}
-{label eq2,orbit alone,mark{[[{label eq1,class plain,ref[]}{'\''}]]},equation[{'a_5=5'}]}
+{id eq1,equation[{'a_4=4'}]}
+{id eq2,mark{[[{ref-id eq1,class plain,ref[]}{'\''}]]},equation[{'a_5=5'}]}
 {class display,aligned[
-    ['a_6&=6\ \text{see '{label eq2,ref[]}'}\\\\']
+    ['a_6&=6\ \text{see '{ref-id eq2,ref[]}'}\\\\']
     'a_{1000}&=1000'
 ]}
-['See more in '{label th,ref[]}.]
+['See more in '{ref-id th,ref[]}.]
 []
-{label th,level 2,heading[Theorem]}
-{label th1,mark A,desc DDU,theorem[STDN is easy to use.]}
+{id th,level 2,heading[Theorem]}
+{id th1,mark A,desc DDU,theorem[STDN is easy to use.]}
 {proof[We leave it to the reader.]}
-{label co1,corollary[{label eq3,orbit alone,mark{'\square'},class plain,equation[STDN is a good language.]}]}
-['See '{label article,ref[]}' for more.']
+{id co1,corollary[{id eq3,mark{'\square'},class plain,equation[STDN is a good language.]}]}
+['See '{ref-id article,ref[]}' for more.']
 []
-{label code,level 2,heading[Code]}
+{id code,level 2,heading[Code]}
 ['Highlighting of '{code[css]}', '{code[html]}', '{code[js]}', '{code[md]}', '{code[ts]}' and st-langs are supported.']
 {lang markdown,code[
     ```css
@@ -60,7 +60,7 @@ latex can also be highlighted.
     '\end{document}'
 ]}
 []
-{label list,level 2,heading[List]}
+{id list,level 2,heading[List]}
 {ol[
     {li[First]}
     {li[Second]}
@@ -82,5 +82,5 @@ latex can also be highlighted.
     {li[Sixth]}
 ]}
 []
-{label ref,heading[References]}
-{label article,orbit article,block,index[Introduction to STDN. DDU.]}
+{id ref,heading[References]}
+{id article,orbit article,block,index[Introduction to STDN. DDU.]}
