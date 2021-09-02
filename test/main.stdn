@@ -5,7 +5,10 @@
 {global,'\def\P{\mathbb P}'}
 {css-src './css.urls',ucs-src './1/ucs.urls',global[]}
 []
-{id eg,heading[Examples]}
+{div[
+    []
+    {id eg,heading[Examples]}
+]}
 [{name DDU,hi[]}' Here are some interesting examples.']
 []
 {id eq,level 2,heading[Equation]}
