@@ -4,7 +4,6 @@
 {global,'\def\C{\mathbb C}'}
 {global,'\def\P{\mathbb P}'}
 {css-src './css.urls',ucs-src './1/ucs.urls',global[]}
-{contents[]}
 []
 {label eg,heading[Examples]}
 [{name DDU,hi[]}' Here are some interesting examples.']

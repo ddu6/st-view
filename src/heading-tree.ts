@@ -9,7 +9,7 @@ export function extractHeadingTree(context:Context){
     const array:TreeItems<HeadingTreeItem>=[]
     for(let i=0;i<context.indexInfoArray.length;i++){
         const indexInfo=context.indexInfoArray[i]
-        if(indexInfo.unit.tag!=='heading'){
+        if(indexInfo.orbit!=='heading'){
             continue
         }
         array.push({
