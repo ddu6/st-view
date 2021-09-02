@@ -78,7 +78,7 @@ export class Viewer extends LRStruct{
                 this.forms.settings.classList.add('hide')
             }
         })
-        const params=new URLSearchParams(document.location.search)
+        const params=new URLSearchParams(location.search)
         const src=params.get('src')??document.documentElement.dataset.src??''
         if(src===''){
             return
@@ -88,7 +88,7 @@ export class Viewer extends LRStruct{
         if(!isFinite(focusLine)){
             focusLine=0
         }
-        let focusId=decodeURIComponent(document.location.hash)
+        let focusId=decodeURIComponent(location.hash)
         if(focusId===''){
             focusId=document.documentElement.dataset.focusId??''
         }else if(focusId.startsWith('#'))(
@@ -97,7 +97,7 @@ export class Viewer extends LRStruct{
         this.load([src],focusURL,focusLine,focusId)
     }
     async load(urls:string[],focusURL='',focusLine=0,focusId=''){
-        const absURLs=await urlsToAbsURLs(urls,document.location.href)
+        const absURLs=await urlsToAbsURLs(urls,location.href)
         const parts:{
             string:string
             dir:string
@@ -150,7 +150,7 @@ export class Viewer extends LRStruct{
         let focusPart=0
         if(focusURL!==''){
             if(isRelURL(focusURL)){
-                focusURL=relURLToAbsURL(focusURL,document.location.href)
+                focusURL=relURLToAbsURL(focusURL,location.href)
             }
             for(let i=0;i<parts.length;i++){
                 const {dir}=parts[i]
