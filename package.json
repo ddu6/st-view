@@ -14,7 +14,7 @@
   "dependencies": {
     "@ddu6/stc": "^0.2.0",
     "@ddu6/stui": "^0.0.44",
-    "st-std": "^0.2.0"
+    "st-std": "^0.2.1"
   },
   "engines": {
     "node": "^14.0.0",
