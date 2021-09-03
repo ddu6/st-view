@@ -80,7 +80,7 @@ export class Viewer extends LRStruct{
         })
         const params=new URLSearchParams(location.search)
         const src=params.get('src')??document.documentElement.dataset.src??''
-        if(src===''){
+        if(src.length===0){
             return
         }
         const focusURL=params.get('focus-url')??document.documentElement.dataset.focusUrl??''
@@ -89,7 +89,7 @@ export class Viewer extends LRStruct{
             focusLine=0
         }
         let focusId=decodeURIComponent(location.hash)
-        if(focusId===''){
+        if(focusId.length===0){
             focusId=document.documentElement.dataset.focusId??''
         }else if(focusId.startsWith('#'))(
             focusId=focusId.slice(1)
@@ -148,7 +148,7 @@ export class Viewer extends LRStruct{
             }
         }
         let focusPart=0
-        if(focusURL!==''){
+        if(focusURL.length>0){
             if(isRelURL(focusURL)){
                 focusURL=relURLToAbsURL(focusURL,location.href)
             }
@@ -181,7 +181,7 @@ export class Viewer extends LRStruct{
                 focusEle=div
             }
         }
-        if(focusId!==''){
+        if(focusId.length>0){
             const anchor=focusEle.querySelector(`[id=${JSON.stringify(focusId)}]`)
             if(anchor!==null){
                 focusEle=anchor
