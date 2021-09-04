@@ -9,8 +9,7 @@ export class Tree<Data>{
     constructor(data?:Data,array:TreeItems<Data>=[]){
         this.data=data
         const tree:Tree<Data>={data:data,children:[]}
-        for(let i=0;i<array.length;i++){
-            const {level,data}=array[i]
+        for(const {level,data} of array){
             let pointer=tree
             for(let i=1;i<level;i++){
                 const children=pointer.children

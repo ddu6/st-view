@@ -97,13 +97,11 @@ export class Viewer extends LRStruct{
         this.load([src],focusURL,focusLine,focusId)
     }
     async load(urls:string[],focusURL='',focusLine=0,focusId=''){
-        const absURLs=await urlsToAbsURLs(urls,location.href)
         const parts:{
             string:string
             dir:string
         }[]=[]
-        for(let i=0;i<absURLs.length;i++){
-            const url=absURLs[i]
+        for(const url of await urlsToAbsURLs(urls,location.href)){
             try{
                 const res=await window.fetch(url)
                 if(!res.ok){

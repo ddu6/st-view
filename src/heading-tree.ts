@@ -7,8 +7,7 @@ export interface HeadingTreeItem{
 }
 export function extractHeadingTree(context:Context){
     const array:TreeItems<HeadingTreeItem>=[]
-    for(let i=0;i<context.indexInfoArray.length;i++){
-        const indexInfo=context.indexInfoArray[i]
+    for(const indexInfo of context.indexInfoArray){
         if(indexInfo.orbit!=='heading'){
             continue
         }
@@ -36,8 +35,8 @@ export function headingTreeToElement(tree:Tree<HeadingTreeItem>){
     const element=new Div(['tree'])
     .append(data)
     .append(children)
-    for(let i=0;i<tree.children.length;i++){
-        children.append(headingTreeToElement(tree.children[i]))
+    for(const child of tree.children){
+        children.append(headingTreeToElement(child))
     }
     mark.addEventListener('click',()=>{
         element.classList.toggle('folded')
