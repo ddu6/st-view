@@ -12,9 +12,9 @@
     "webpack-cli": "^4.8.0"
   },
   "dependencies": {
-    "@ddu6/stc": "^0.2.4",
+    "@ddu6/stc": "^0.2.5",
     "@ddu6/stui": "^0.0.44",
-    "st-std": "^0.2.6"
+    "st-std": "^0.2.7"
   },
   "engines": {
     "node": "^14.0.0",
