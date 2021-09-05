@@ -1,8 +1,12 @@
 import {Checkbox,Div,Form,FormLine,LRStruct} from '@ddu6/stui'
-import {isRelURL,relURLToAbsURL,urlsToAbsURLs,multiCompile} from '@ddu6/stc'
+import {isRelURL,relURLToAbsURL,urlsToAbsURLs,multiCompile, compile} from '@ddu6/stc'
 import {css,headCSS,tagToUnitCompiler} from 'st-std'
 import {all} from './lib/css'
 import {extractHeadingTree,headingTreeToElement} from './heading-tree'
+interface Part{
+    string:string
+    dir:string
+}
 export class Viewer extends LRStruct{
     readonly headStyle=document.createElement('style')
     readonly customStyleEle=document.createElement('style')
@@ -79,10 +83,6 @@ export class Viewer extends LRStruct{
             }
         })
         const params=new URLSearchParams(location.search)
-        const src=params.get('src')??document.documentElement.dataset.src??''
-        if(src.length===0){
-            return
-        }
         const focusURL=params.get('focus-url')??document.documentElement.dataset.focusUrl??''
         let focusLine=Number(params.get('focus-line')??document.documentElement.dataset.focusLine??'')
         if(!isFinite(focusLine)){
@@ -94,36 +94,18 @@ export class Viewer extends LRStruct{
         }else if(focusId.startsWith('#'))(
             focusId=focusId.slice(1)
         )
-        this.load([src],focusURL,focusLine,focusId)
-    }
-    async load(urls:string[],focusURL='',focusLine=0,focusId=''){
-        const parts:{
-            string:string
-            dir:string
-        }[]=[]
-        for(const url of await urlsToAbsURLs(urls,location.href)){
-            try{
-                const res=await window.fetch(url)
-                if(!res.ok){
-                    continue
-                }
-                parts.push({
-                    string:await res.text(),
-                    dir:url
-                })
-            }catch(err){
-                console.log(err)
-            }
+        const string=params.get('string')??document.documentElement.dataset.string??''
+        const src=params.get('src')??document.documentElement.dataset.src??''
+        if(string.length>0){
+            this.loadString(string,focusLine,focusId)
+            return
         }
-        const {documentFragment,context,partLengths}=await multiCompile(parts,{
-            dftTagToUnitCompiler:tagToUnitCompiler
-        })
-        document.title=context.title
-        this.customStyleEle.textContent=context.css
-        this.article.element.innerHTML=''
-        this.article.append(documentFragment)
-        this.headingTree.element.innerHTML=''
-        this.headingTree.append(headingTreeToElement(extractHeadingTree(context)))
+        if(src.length>0){
+            this.load([src],focusURL,focusLine,focusId)
+            return
+        }
+    }
+    private initParts(parts:Part[],partLengths:number[],focusURL:string,focusLine:number,focusId:string){
         if(
             parts.length===0
             ||this.article.children.length===0
@@ -186,5 +168,48 @@ export class Viewer extends LRStruct{
             }
         }
         focusEle.scrollIntoView()
+    }
+    async load(urls:string[],focusURL='',focusLine=0,focusId=''){
+        const parts:Part[]=[]
+        for(const url of await urlsToAbsURLs(urls,location.href)){
+            try{
+                const res=await window.fetch(url)
+                if(!res.ok){
+                    continue
+                }
+                parts.push({
+                    string:await res.text(),
+                    dir:url
+                })
+            }catch(err){
+                console.log(err)
+            }
+        }
+        const {documentFragment,context,partLengths}=await multiCompile(parts,{
+            dftTagToUnitCompiler:tagToUnitCompiler
+        })
+        document.title=context.title
+        this.customStyleEle.textContent=context.css
+        this.article.element.innerHTML=''
+        this.article.append(documentFragment)
+        this.headingTree.element.innerHTML=''
+        this.headingTree.append(headingTreeToElement(extractHeadingTree(context)))
+        this.initParts(parts,partLengths,focusURL,focusLine,focusId)
+    }
+    async loadString(string:string,focusLine=0,focusId=''){
+        const result=await compile(string,location.href,{
+            dftTagToUnitCompiler:tagToUnitCompiler
+        })
+        if(result===undefined){
+            return
+        }
+        const {documentFragment,context}=result
+        document.title=context.title
+        this.customStyleEle.textContent=context.css
+        this.article.element.innerHTML=''
+        this.article.append(documentFragment)
+        this.headingTree.element.innerHTML=''
+        this.headingTree.append(headingTreeToElement(extractHeadingTree(context)))
+        this.initParts([{string,dir:location.href}],[this.article.children.length],'',focusLine,focusId)
     }
 }
