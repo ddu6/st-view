@@ -15,9 +15,12 @@
 }
 
 .side>.content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
     justify-content: space-between;
 }
 
 .side>.content>.panel {
-    padding: var(--length-padding);
+    margin: var(--length-padding);
 }

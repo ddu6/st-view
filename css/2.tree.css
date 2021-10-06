@@ -1,5 +1,5 @@
 .heading-tree {
-    padding: var(--length-padding);
+    margin: var(--length-padding);
 }
 
 .heading-tree .data {
