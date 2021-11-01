@@ -8,7 +8,7 @@ export interface HeadingTreeItem{
 export function extractHeadingTree(context:Context){
     const array:TreeItems<HeadingTreeItem>=[]
     for(const indexInfo of context.indexInfoArray){
-        if(indexInfo.orbit!=='heading'){
+        if(indexInfo.realOrbit!=='heading'){
             continue
         }
         array.push({
