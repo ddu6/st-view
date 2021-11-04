@@ -1,4 +1,4 @@
-.main>.article {
+main>article {
     padding: 0 var(--length-padding);
     margin: 0 auto;
     max-width: var(--length-width);
@@ -8,13 +8,13 @@
 }
 
 @media print {
-    .main>.article {
+    main>article {
         margin: 0;
         padding: 0;
     }
 }
 
-.side>.content {
+aside>.content {
     display: flex;
     flex-direction: column;
     height: 100%;
@@ -22,6 +22,6 @@
     overflow: auto;
 }
 
-.side>.content>.panel {
+aside>.content>.panel {
     margin: var(--length-padding);
 }

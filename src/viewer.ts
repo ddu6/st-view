@@ -1,4 +1,4 @@
-import {Checkbox,Div,Form,FormLine,LRStruct} from '@ddu6/stui'
+import {Checkbox,CommonEle,Div,Form,FormLine,LRStruct} from '@ddu6/stui'
 import {isRelURL,relURLToAbsURL,urlsToAbsURLs,multiCompile, compile} from '@ddu6/stc'
 import {css,headCSS,tagToUnitCompiler} from 'st-std'
 import {all} from './lib/css'
@@ -10,8 +10,8 @@ interface Part{
 export class Viewer extends LRStruct{
     readonly headStyle=document.createElement('style')
     readonly customStyleEle=document.createElement('style')
-    readonly article=new Div(['article'])
-    readonly headingTree=new Div(['heading tree'])
+    readonly article=new CommonEle('article',['article'])
+    readonly headingTree=new CommonEle('nav',['heading tree'])
     readonly selects={
         colorScheme:document.createElement('select'),
         fontSize:document.createElement('select'),
