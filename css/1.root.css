@@ -1,4 +1,4 @@
-main>article {
+body>.lr-struct>main>article {
     display: flow-root;
     margin: 0 auto;
     margin-bottom: 100vh;
@@ -8,13 +8,13 @@ main>article {
 }
 
 @media print {
-    main>article {
+    body>.lr-struct>main>article {
         margin: 0;
         padding: 0;
     }
 }
 
-aside>.content {
+body>.lr-struct>aside>.content {
     display: flex;
     flex-direction: column;
     height: 100%;
@@ -22,6 +22,6 @@ aside>.content {
     overflow: auto;
 }
 
-aside>.content>.panel {
+body>.lr-struct>aside>.content>.panel {
     margin: var(--length-padding);
 }

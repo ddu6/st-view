@@ -1,13 +1,13 @@
-.heading-tree {
+body>.lr-struct>aside>.content>nav {
     margin: var(--length-padding);
 }
 
-.heading-tree .data {
+body>.lr-struct>aside>.content>nav .data {
     display: flex;
     align-items: baseline;
 }
 
-.heading-tree .mark::before {
+body>.lr-struct>aside>.content>nav .mark::before {
     font-family: var(--font-mono);
     color: var(--color-light);
     display: block;
@@ -16,19 +16,19 @@
     content: "−";
 }
 
-.heading-tree .tree.folded>.data>.mark::before {
+body>.lr-struct>aside>.content>nav .tree.folded>.data>.mark::before {
     content: "+";
 }
 
-.heading-tree .content {
+body>.lr-struct>aside>.content>nav .content {
     flex-grow: 1;
 }
 
-.heading-tree .children {
+body>.lr-struct>aside>.content>nav .children {
     border-left: 1px solid var(--color-border);
     margin-left: calc(.5em - .5px);
 }
 
-.heading-tree .tree.folded>.children {
+body>.lr-struct>aside>.content>nav .tree.folded>.children {
     display: none;
 }
