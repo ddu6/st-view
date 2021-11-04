@@ -25,8 +25,8 @@
 }
 
 .heading-tree .children {
-    margin-left: calc(.5em - .5px);
     border-left: 1px solid var(--color-border);
+    margin-left: calc(.5em - .5px);
 }
 
 .heading-tree .tree.folded>.children {

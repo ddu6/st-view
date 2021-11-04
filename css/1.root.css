@@ -1,10 +1,10 @@
 main>article {
-    padding: 0 var(--length-padding);
+    display: flow-root;
     margin: 0 auto;
+    margin-bottom: 100vh;
     max-width: var(--length-width);
     min-width: 100px;
-    margin-bottom: 100vh;
-    display: flow-root;
+    padding: 0 var(--length-padding);
 }
 
 @media print {
