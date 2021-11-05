@@ -3,17 +3,17 @@ body>.lr-struct>aside>.content>nav {
 }
 
 body>.lr-struct>aside>.content>nav .data {
-    display: flex;
     align-items: baseline;
+    display: flex;
 }
 
 body>.lr-struct>aside>.content>nav .mark::before {
-    font-family: var(--font-mono);
     color: var(--color-light);
-    display: block;
-    width: 1em;
-    text-align: center;
     content: "−";
+    display: block;
+    font-family: var(--font-mono);
+    text-align: center;
+    width: 1em;
 }
 
 body>.lr-struct>aside>.content>nav .tree.folded>.data>.mark::before {
