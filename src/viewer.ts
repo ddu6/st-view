@@ -167,7 +167,9 @@ export class Viewer extends LRStruct{
                 focusEle=anchor
             }
         }
-        focusEle.scrollIntoView()
+        setTimeout(()=>{
+            focusEle.scrollIntoView()
+        },100)
     }
     async load(urls:string[],focusURL='',focusLine=0,focusId=''){
         const parts:Part[]=[]
