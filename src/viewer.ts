@@ -177,7 +177,7 @@ export class Viewer extends LRStruct{
                 if(count>0){
                     break
                 }
-                if(focusEle.getBoundingClientRect().top!==0){
+                if(Math.abs(focusEle.getBoundingClientRect().top)>1){
                     focusEle.scrollIntoView()
                     count--
                 }
