@@ -105,7 +105,7 @@ export class Viewer extends LRStruct{
             return
         }
     }
-    private initParts(parts:Part[],partLengths:number[],focusURL:string,focusLine:number,focusId:string){
+    private async initParts(parts:Part[],partLengths:number[],focusURL:string,focusLine:number,focusId:string){
         if(
             parts.length===0
             ||this.article.children.length===0
@@ -168,13 +168,22 @@ export class Viewer extends LRStruct{
             }
         }
         if(focusEle!==this.article.element){
-            focusEle.scrollIntoView()
-            setTimeout(()=>{
-                focusEle.scrollIntoView()
-            },100)
-            setTimeout(()=>{
-                focusEle.scrollIntoView()
-            },500)
+            let count=0
+            const l=()=>{
+                count++
+            }
+            addEventListener('scroll',l)
+            for(let i=0;i<100;i++){
+                if(count>0){
+                    break
+                }
+                if(focusEle.getBoundingClientRect().top!==0){
+                    focusEle.scrollIntoView()
+                    count--
+                }
+                await new Promise(r=>setTimeout(r,100))
+            }
+            removeEventListener('scroll',l)
         }
     }
     async load(urls:string[],focusURL='',focusLine=0,focusId=''){
@@ -202,7 +211,7 @@ export class Viewer extends LRStruct{
         this.article.append(documentFragment)
         this.headingTree.element.innerHTML=''
         this.headingTree.append(headingTreeToElement(extractHeadingTree(context)))
-        this.initParts(parts,partLengths,focusURL,focusLine,focusId)
+        await this.initParts(parts,partLengths,focusURL,focusLine,focusId)
     }
     async loadString(string:string,focusLine=0,focusId=''){
         const result=await compile(string,location.href,{
@@ -218,6 +227,6 @@ export class Viewer extends LRStruct{
         this.article.append(documentFragment)
         this.headingTree.element.innerHTML=''
         this.headingTree.append(headingTreeToElement(extractHeadingTree(context)))
-        this.initParts([{string,dir:location.href}],[this.article.children.length],'',focusLine,focusId)
+        await this.initParts([{string,dir:location.href}],[this.article.children.length],'',focusLine,focusId)
     }
 }
