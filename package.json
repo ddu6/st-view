@@ -13,8 +13,8 @@
   },
   "dependencies": {
     "@ddu6/stc": "^0.2.23",
-    "@ddu6/stui": "^0.0.58",
-    "st-std": "^0.2.37"
+    "@ddu6/stui": "^0.0.59",
+    "st-std": "^0.2.38"
   },
   "engines": {
     "node": ">=14.0.0",
