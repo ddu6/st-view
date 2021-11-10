@@ -1,5 +1,5 @@
 import {Context,unitToPlainString} from '@ddu6/stc'
-import {Anchor, Div} from '@ddu6/stui'
+import {Anchor,Div} from '@ddu6/stui'
 import {TreeItems,Tree} from './tree'
 export interface HeadingTreeItem{
     string:string
@@ -8,16 +8,15 @@ export interface HeadingTreeItem{
 export function extractHeadingTree(context:Context){
     const array:TreeItems<HeadingTreeItem>=[]
     for(const indexInfo of context.indexInfoArray){
-        if(indexInfo.realOrbit!=='heading'){
-            continue
+        if(indexInfo.realOrbit==='heading'){
+            array.push({
+                level:indexInfo.index.length,
+                data:{
+                    string:unitToPlainString(indexInfo.unit),
+                    href:'#'+encodeURIComponent(indexInfo.id)
+                }
+            })
         }
-        array.push({
-            level:indexInfo.index.length,
-            data:{
-                string:unitToPlainString(indexInfo.unit),
-                href:'#'+encodeURIComponent(indexInfo.id)
-            }
-        })
     }
     return new Tree({
         string:context.title,

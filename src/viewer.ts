@@ -1,5 +1,5 @@
-import {Checkbox,CommonEle,Div,Form,FormLine,LRStruct} from '@ddu6/stui'
-import {isRelURL,relURLToAbsURL,urlsToAbsURLs,multiCompile, compile} from '@ddu6/stc'
+import {Checkbox,CommonEle,Form,FormLine,LRStruct} from '@ddu6/stui'
+import {isRelURL,relURLToAbsURL,urlsToAbsURLs,multiCompile,compile} from '@ddu6/stc'
 import {css,headCSS,tagToUnitCompiler} from 'st-std'
 import {all} from './lib/css'
 import {extractHeadingTree,headingTreeToElement} from './heading-tree'
@@ -203,7 +203,7 @@ export class Viewer extends LRStruct{
             }
         }
         const {documentFragment,context,partLengths}=await multiCompile(parts,{
-            dftTagToUnitCompiler:tagToUnitCompiler
+            builtInTagToUnitCompiler:tagToUnitCompiler
         })
         document.title=context.title
         this.customStyleEle.textContent=context.css
@@ -215,7 +215,7 @@ export class Viewer extends LRStruct{
     }
     async loadString(string:string,focusLine=0,focusId=''){
         const result=await compile(string,location.href,{
-            dftTagToUnitCompiler:tagToUnitCompiler
+            builtInTagToUnitCompiler:tagToUnitCompiler
         })
         if(result===undefined){
             return
