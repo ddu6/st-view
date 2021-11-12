@@ -7,7 +7,7 @@ export class Viewer extends LRStruct {
     constructor() {
         super('Viewer', '', css + all);
         this.headStyle = document.createElement('style');
-        this.customStyleEle = document.createElement('style');
+        this.customStyle = document.createElement('style');
         this.article = new CommonEle('article', ['article']);
         this.headingTree = new CommonEle('nav', ['heading tree']);
         this.selects = {
@@ -23,8 +23,6 @@ export class Viewer extends LRStruct {
         };
         this.dblClickLineListeners = [];
         this.headStyle.textContent = headCSS;
-        document.body.prepend(this.headStyle);
-        document.body.append(this.customStyleEle);
         this.main.append(this.article);
         this.sideContent
             .append(this.headingTree)
@@ -186,7 +184,7 @@ export class Viewer extends LRStruct {
             builtInTagToUnitCompiler: tagToUnitCompiler
         });
         document.title = context.title;
-        this.customStyleEle.textContent = context.css;
+        this.customStyle.textContent = context.css;
         this.article.element.innerHTML = '';
         this.article.append(documentFragment);
         this.headingTree.element.innerHTML = '';
@@ -202,7 +200,7 @@ export class Viewer extends LRStruct {
         }
         const { documentFragment, context } = result;
         document.title = context.title;
-        this.customStyleEle.textContent = context.css;
+        this.customStyle.textContent = context.css;
         this.article.element.innerHTML = '';
         this.article.append(documentFragment);
         this.headingTree.element.innerHTML = '';

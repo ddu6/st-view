@@ -9,7 +9,7 @@ interface Part{
 }
 export class Viewer extends LRStruct{
     readonly headStyle=document.createElement('style')
-    readonly customStyleEle=document.createElement('style')
+    readonly customStyle=document.createElement('style')
     readonly article=new CommonEle('article',['article'])
     readonly headingTree=new CommonEle('nav',['heading tree'])
     readonly selects={
@@ -31,8 +31,6 @@ export class Viewer extends LRStruct{
     constructor(){
         super('Viewer','',css+all)
         this.headStyle.textContent=headCSS
-        document.body.prepend(this.headStyle)
-        document.body.append(this.customStyleEle)
         this.main.append(this.article)
         this.sideContent
         .append(this.headingTree)
@@ -206,7 +204,7 @@ export class Viewer extends LRStruct{
             builtInTagToUnitCompiler:tagToUnitCompiler
         })
         document.title=context.title
-        this.customStyleEle.textContent=context.css
+        this.customStyle.textContent=context.css
         this.article.element.innerHTML=''
         this.article.append(documentFragment)
         this.headingTree.element.innerHTML=''
@@ -222,7 +220,7 @@ export class Viewer extends LRStruct{
         }
         const {documentFragment,context}=result
         document.title=context.title
-        this.customStyleEle.textContent=context.css
+        this.customStyle.textContent=context.css
         this.article.element.innerHTML=''
         this.article.append(documentFragment)
         this.headingTree.element.innerHTML=''

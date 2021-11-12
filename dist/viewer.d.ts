@@ -1,7 +1,7 @@
 import { Checkbox, CommonEle, Form, LRStruct } from '@ddu6/stui';
 export declare class Viewer extends LRStruct {
     readonly headStyle: HTMLStyleElement;
-    readonly customStyleEle: HTMLStyleElement;
+    readonly customStyle: HTMLStyleElement;
     readonly article: CommonEle<"article">;
     readonly headingTree: CommonEle<"nav">;
     readonly selects: {
