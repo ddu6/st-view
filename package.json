@@ -1,6 +1,6 @@
 {
   "name": "st-view",
-  "version": "0.3.12",
+  "version": "0.4.0",
   "description": "STDN Viewer",
   "main": "dist/mod.js",
   "scripts": {
