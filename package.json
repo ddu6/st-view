@@ -12,7 +12,7 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "@ddu6/pkg-tools": "^0.0.6",
+    "@ddu6/pkg-tools": "^0.0.8",
     "@types/node": "^16.11.7",
     "typescript": "^4.4.4",
     "webpack": "^5.64.0",
@@ -20,8 +20,8 @@
   },
   "dependencies": {
     "@ddu6/stc": "^0.3.12",
-    "@ddu6/stui": "^0.1.4",
-    "st-std": "^0.3.18"
+    "@ddu6/stui": "^0.1.11",
+    "st-std": "^0.3.19"
   },
   "engines": {
     "node": ">=14.0.0",
