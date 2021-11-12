@@ -1,20 +1,32 @@
 {
+  "name": "st-view",
   "version": "0.3.12",
+  "description": "STDN Viewer",
+  "main": "dist/mod.js",
   "scripts": {
-    "build": "pkg && webpack"
+    "build": "pkg && tsc && webpack"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/st-org/st-view.git"
+  },
+  "author": "ddu6",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/st-org/st-view/issues"
+  },
+  "homepage": "https://github.com/st-org/st-view#readme",
   "devDependencies": {
     "@ddu6/pkg-tools": "^0.0.6",
     "@types/node": "^16.11.7",
-    "ts-loader": "^9.2.6",
     "typescript": "^4.4.4",
-    "webpack": "^5.63.0",
+    "webpack": "^5.64.0",
     "webpack-cli": "^4.9.1"
   },
   "dependencies": {
     "@ddu6/stc": "^0.3.10",
-    "@ddu6/stui": "^0.1.0",
-    "st-std": "^0.3.13"
+    "@ddu6/stui": "^0.1.1",
+    "st-std": "^0.3.14"
   },
   "engines": {
     "node": ">=14.0.0",
