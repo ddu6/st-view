@@ -13,15 +13,15 @@
   "license": "MIT",
   "devDependencies": {
     "@ddu6/pkg-tools": "^0.0.9",
-    "@types/node": "^16.11.10",
+    "@types/node": "^16.11.11",
     "typescript": "^4.5.2",
     "webpack": "^5.64.4",
     "webpack-cli": "^4.9.1"
   },
   "dependencies": {
-    "@ddu6/stc": "^0.3.17",
+    "@ddu6/stc": "^0.3.18",
     "@ddu6/stui": "^0.1.20",
-    "st-std": "^0.3.27"
+    "st-std": "^0.3.28"
   },
   "engines": {
     "node": ">=14.0.0",
