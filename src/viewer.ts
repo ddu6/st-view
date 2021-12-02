@@ -166,22 +166,27 @@ export class Viewer extends LRStruct{
             }
         }
         if(focusEle!==this.article.element){
-            let count=0
+            let operated=false
             const l=()=>{
-                count++
+                operated=true
             }
-            addEventListener('scroll',l)
+            addEventListener('wheel',l)
+            addEventListener('touchmove',l)
+            addEventListener('keydown',l)
+            addEventListener('click',l)
             for(let i=0;i<100;i++){
-                if(count>0){
+                if(operated){
                     break
                 }
                 if(Math.abs(focusEle.getBoundingClientRect().top)>1){
                     focusEle.scrollIntoView()
-                    count--
                 }
                 await new Promise(r=>setTimeout(r,100))
             }
-            removeEventListener('scroll',l)
+            removeEventListener('wheel',l)
+            removeEventListener('touchmove',l)
+            removeEventListener('keydown',l)
+            removeEventListener('click',l)
         }
     }
     async load(urls:string[],focusURL='',focusLine=0,focusId=''){
