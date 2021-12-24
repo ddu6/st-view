@@ -1,4 +1,4 @@
-import {Context,unitToPlainString} from '@ddu6/stc'
+import {Context,unitToInlinePlainString} from '@ddu6/stc'
 import {Anchor,Div} from '@ddu6/stui'
 import {TreeItems,Tree} from './tree'
 export interface HeadingTreeItem{
@@ -12,7 +12,7 @@ export function extractHeadingTree(context:Context){
             array.push({
                 level:indexInfo.index.length,
                 data:{
-                    string:unitToPlainString(indexInfo.unit),
+                    string:unitToInlinePlainString(indexInfo.unit),
                     href:'#'+encodeURIComponent(indexInfo.id)
                 }
             })

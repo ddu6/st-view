@@ -1,4 +1,4 @@
-import { unitToPlainString } from '@ddu6/stc';
+import { unitToInlinePlainString } from '@ddu6/stc';
 import { Anchor, Div } from '@ddu6/stui';
 import { Tree } from './tree';
 export function extractHeadingTree(context) {
@@ -8,7 +8,7 @@ export function extractHeadingTree(context) {
             array.push({
                 level: indexInfo.index.length,
                 data: {
-                    string: unitToPlainString(indexInfo.unit),
+                    string: unitToInlinePlainString(indexInfo.unit),
                     href: '#' + encodeURIComponent(indexInfo.id)
                 }
             });
