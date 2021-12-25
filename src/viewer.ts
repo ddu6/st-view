@@ -55,22 +55,22 @@ export class Viewer extends LRStruct{
         this.selects.colorScheme.innerHTML='<option>auto</option><option>dark</option><option>light</option>'
         this.selects.fontSize.innerHTML='<option>small</option><option>medium</option><option>large</option>'
         document.documentElement.dataset.colorScheme
-        =this.selects.colorScheme.value
-        =window.localStorage.getItem('st-color-scheme')
-        ??document.documentElement.dataset.colorScheme
-        ??'auto'
+            =this.selects.colorScheme.value
+            =window.localStorage.getItem('st-color-scheme')
+            ??document.documentElement.dataset.colorScheme
+            ??'auto'
         document.documentElement.dataset.fontSize
-        =this.selects.fontSize.value
-        =window.localStorage.getItem('st-font-size')
-        ??document.documentElement.dataset.fontSize
-        ??'small'
-        this.selects.colorScheme.addEventListener('input',()=>{
+            =this.selects.fontSize.value
+            =window.localStorage.getItem('st-font-size')
+            ??document.documentElement.dataset.fontSize
+            ??'small'
+        this.selects.colorScheme.addEventListener('change',()=>{
             window.localStorage.setItem(
                 'st-color-scheme',
                 document.documentElement.dataset.colorScheme=this.selects.colorScheme.value
             )
         })
-        this.selects.fontSize.addEventListener('input',()=>{
+        this.selects.fontSize.addEventListener('change',()=>{
             window.localStorage.setItem(
                 'st-font-size',
                 document.documentElement.dataset.fontSize=this.selects.fontSize.value

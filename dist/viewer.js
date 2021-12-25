@@ -45,10 +45,10 @@ export class Viewer extends LRStruct {
                 = window.localStorage.getItem('st-font-size')
                     ?? document.documentElement.dataset.fontSize
                     ?? 'small';
-        this.selects.colorScheme.addEventListener('input', () => {
+        this.selects.colorScheme.addEventListener('change', () => {
             window.localStorage.setItem('st-color-scheme', document.documentElement.dataset.colorScheme = this.selects.colorScheme.value);
         });
-        this.selects.fontSize.addEventListener('input', () => {
+        this.selects.fontSize.addEventListener('change', () => {
             window.localStorage.setItem('st-font-size', document.documentElement.dataset.fontSize = this.selects.fontSize.value);
         });
         this.checkboxes.settings.addEventListener('click', () => {
