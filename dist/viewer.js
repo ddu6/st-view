@@ -185,7 +185,7 @@ export class Viewer extends LRStruct {
                 console.log(err);
             }
         }
-        const { documentFragment, context, partLengths } = await multiCompile(parts, {
+        const { documentFragment, compiler: { context }, partLengths } = await multiCompile(parts, {
             builtInTagToUnitCompiler: tagToUnitCompiler
         });
         document.title = context.title;
@@ -203,7 +203,7 @@ export class Viewer extends LRStruct {
         if (result === undefined) {
             return;
         }
-        const { documentFragment, context } = result;
+        const { documentFragment, compiler: { context } } = result;
         document.title = context.title;
         this.customStyle.textContent = context.css;
         this.article.element.innerHTML = '';
