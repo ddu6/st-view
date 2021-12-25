@@ -1,5 +1,5 @@
-import { Checkbox, CommonEle, Form, FormLine, LRStruct } from '@ddu6/stui';
 import { isRelURL, relURLToAbsURL, urlsToAbsURLs, multiCompile, compile } from '@ddu6/stc';
+import { Checkbox, CommonEle, Form, FormLine, LRStruct } from '@ddu6/stui';
 import { css, headCSS, tagToUnitCompiler } from 'st-std';
 import { all } from './lib/css';
 import { extractHeadingTree, headingTreeToElement } from './heading-tree';
@@ -185,31 +185,35 @@ export class Viewer extends LRStruct {
                 console.log(err);
             }
         }
-        const { documentFragment, compiler: { context }, partLengths } = await multiCompile(parts, {
-            builtInTagToUnitCompiler: tagToUnitCompiler
+        const { documentFragment, partLengths, compiler, doc } = await multiCompile(parts, {
+            builtInTagToUnitCompiler: tagToUnitCompiler,
+            style: this.customStyle
         });
-        document.title = context.title;
-        this.customStyle.textContent = context.css;
+        this.compiler = compiler;
+        this.doc = doc;
+        document.title = compiler.context.title;
         this.article.element.innerHTML = '';
         this.article.append(documentFragment);
         this.headingTree.element.innerHTML = '';
-        this.headingTree.append(headingTreeToElement(extractHeadingTree(context)));
+        this.headingTree.append(headingTreeToElement(extractHeadingTree(compiler.context)));
         await this.initParts(parts, partLengths, focusURL, focusLine, focusId);
     }
     async loadString(string, focusLine = 0, focusId = '') {
         const result = await compile(string, location.href, {
-            builtInTagToUnitCompiler: tagToUnitCompiler
+            builtInTagToUnitCompiler: tagToUnitCompiler,
+            style: this.customStyle
         });
         if (result === undefined) {
             return;
         }
-        const { documentFragment, compiler: { context } } = result;
-        document.title = context.title;
-        this.customStyle.textContent = context.css;
+        const { documentFragment, compiler, doc } = result;
+        this.compiler = compiler;
+        this.doc = doc;
+        document.title = compiler.context.title;
         this.article.element.innerHTML = '';
         this.article.append(documentFragment);
         this.headingTree.element.innerHTML = '';
-        this.headingTree.append(headingTreeToElement(extractHeadingTree(context)));
+        this.headingTree.append(headingTreeToElement(extractHeadingTree(compiler.context)));
         await this.initParts([{ string, dir: location.href }], [this.article.children.length], '', focusLine, focusId);
     }
 }

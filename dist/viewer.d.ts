@@ -1,3 +1,5 @@
+import { STDN } from 'stdn';
+import { Compiler } from '@ddu6/stc';
 import { Checkbox, CommonEle, Form, LRStruct } from '@ddu6/stui';
 export declare class Viewer extends LRStruct {
     readonly headStyle: HTMLStyleElement;
@@ -16,6 +18,8 @@ export declare class Viewer extends LRStruct {
         settings: Form;
     };
     dblClickLineListeners: ((line: number, url: string, partialLine: number) => Promise<void>)[];
+    compiler: Compiler | undefined;
+    doc: STDN | undefined;
     constructor();
     private initParts;
     load(urls: string[], focusURL?: string, focusLine?: number, focusId?: string): Promise<void>;
