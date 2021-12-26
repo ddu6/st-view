@@ -20,22 +20,15 @@ export async function createViewer(){
     const style=document.createElement('style')
     const article=document.createElement('article')
     const nav=document.createElement('nav')
+    const panel=document.createElement('div')
+    const settingsButton=document.createElement('button')
+    const settings=document.createElement('div')
     const colorScheme=document.createElement('select')
     const fontSize=document.createElement('select')
-    const panel=document.createElement('div')
-    const settingsButton=document.createElement('div')
-    const settings=document.createElement('div')
+    settingsButton.textContent='Settings'
     settings.classList.add('hide')
-    const dblClickLineListeners:((
-        line:number,
-        url:string,
-        partialLine:number,
-    )=>Promise<void>)[]=[]
-    const content:{
-        compiler?:Compiler,
-        doc?:STDN,
-        partLengths?:number[]
-    }={}
+    colorScheme.innerHTML='<option>auto</option><option>dark</option><option>light</option>'
+    fontSize.innerHTML='<option>small</option><option>medium</option><option>large</option>'
     main.append(article)
     sideContent.append(nav)
     sideContent.append(panel)
@@ -43,8 +36,13 @@ export async function createViewer(){
     panel.append(settings)
     settings.append(createNamedElement('Color Scheme',colorScheme))
     settings.append(createNamedElement('Font Size',fontSize))
-    colorScheme.innerHTML='<option>auto</option><option>dark</option><option>light</option>'
-    fontSize.innerHTML='<option>small</option><option>medium</option><option>large</option>'
+    settingsButton.addEventListener('click',()=>{
+        if(settingsButton.classList.toggle('pushing')){
+            settings.classList.remove('hide')
+        }else{
+            settings.classList.add('hide')
+        }
+    })
     document.documentElement.dataset.colorScheme
         =colorScheme.value
         =window.localStorage.getItem('st-color-scheme')
@@ -67,13 +65,16 @@ export async function createViewer(){
             document.documentElement.dataset.fontSize=fontSize.value
         )
     })
-    settingsButton.addEventListener('click',()=>{
-        if(settingsButton.classList.toggle('checked')){
-            settings.classList.remove('hide')
-        }else{
-            settings.classList.add('hide')
-        }
-    })
+    const dblClickLineListeners:((
+        line:number,
+        url:string,
+        partialLine:number,
+    )=>Promise<void>)[]=[]
+    const content:{
+        compiler?:Compiler,
+        doc?:STDN,
+        partLengths?:number[]
+    }={}
     async function initParts(parts:Part[],partLengths:number[],focusURL:string,focusLine:number,focusId:string){
         if(parts.length===0||article.children.length===0){
             return

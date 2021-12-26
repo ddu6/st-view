@@ -21,7 +21,3 @@ body>.lr-struct>aside>.content {
     justify-content: space-between;
     overflow: auto;
 }
-
-body>.lr-struct>aside>.content>.panel {
-    margin: var(--length-padding);
-}

@@ -1,0 +1,14 @@
+body>.lr-struct>aside>.content>div {
+    margin: var(--length-padding);
+}
+
+body>.lr-struct>aside>.content>div>div>div {
+    display: grid;
+    grid-template-columns: 1fr;
+    margin: var(--length-gap) 0;
+}
+
+body>.lr-struct>aside>.content>div>button,
+body>.lr-struct>aside>.content>div>div>div>div {
+    font-size: var(--length-font-log);
+}
