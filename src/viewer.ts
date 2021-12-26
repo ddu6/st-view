@@ -1,4 +1,4 @@
-import {STDN} from 'stdn'
+import type {STDN} from 'stdn'
 import {Compiler,compile,isRelURL,multiCompile,relURLToAbsURL,urlsToAbsURLs} from '@ddu6/stc'
 import {createLRStruct} from '@ddu6/stui'
 import {tagToUnitCompiler} from 'st-std'

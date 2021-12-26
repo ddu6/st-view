@@ -1,4 +1,4 @@
-import { STDN } from 'stdn';
+import type { STDN } from 'stdn';
 import { Compiler } from '@ddu6/stc';
 interface Part {
     string: string;
