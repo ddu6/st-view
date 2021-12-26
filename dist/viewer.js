@@ -1,90 +1,63 @@
-import { isRelURL, relURLToAbsURL, urlsToAbsURLs, multiCompile, compile } from '@ddu6/stc';
-import { Checkbox, CommonEle, Form, FormLine, LRStruct } from '@ddu6/stui';
-import { css, headCSS, tagToUnitCompiler } from 'st-std';
-import { all } from './lib/css';
+import { compile, isRelURL, multiCompile, relURLToAbsURL, urlsToAbsURLs } from '@ddu6/stc';
+import { createLRStruct } from '@ddu6/stui';
+import { tagToUnitCompiler } from 'st-std';
 import { extractHeadingTree, headingTreeToElement } from './heading-tree';
-export class Viewer extends LRStruct {
-    constructor() {
-        super('Viewer', '', css + all);
-        this.headStyle = document.createElement('style');
-        this.customStyle = document.createElement('style');
-        this.article = new CommonEle('article', ['article']);
-        this.headingTree = new CommonEle('nav', ['heading tree']);
-        this.selects = {
-            colorScheme: document.createElement('select'),
-            fontSize: document.createElement('select'),
-        };
-        this.checkboxes = {
-            settings: new Checkbox('settings', ['show name', 'left']),
-        };
-        this.forms = {
-            panel: new Form('panel'),
-            settings: new Form('settings', ['hide']),
-        };
-        this.dblClickLineListeners = [];
-        this.headStyle.textContent = headCSS;
-        this.main.append(this.article);
-        this.sideContent
-            .append(this.headingTree)
-            .append(this.forms.panel
-            .append(this.checkboxes.settings)
-            .append(this.forms.settings
-            .append(new FormLine('color scheme')
-            .append(this.selects.colorScheme))
-            .append(new FormLine('font size')
-            .append(this.selects.fontSize))));
-        this.selects.colorScheme.innerHTML = '<option>auto</option><option>dark</option><option>light</option>';
-        this.selects.fontSize.innerHTML = '<option>small</option><option>medium</option><option>large</option>';
-        document.documentElement.dataset.colorScheme
-            = this.selects.colorScheme.value
-                = window.localStorage.getItem('st-color-scheme')
-                    ?? document.documentElement.dataset.colorScheme
-                    ?? 'auto';
-        document.documentElement.dataset.fontSize
-            = this.selects.fontSize.value
-                = window.localStorage.getItem('st-font-size')
-                    ?? document.documentElement.dataset.fontSize
-                    ?? 'small';
-        this.selects.colorScheme.addEventListener('change', () => {
-            window.localStorage.setItem('st-color-scheme', document.documentElement.dataset.colorScheme = this.selects.colorScheme.value);
-        });
-        this.selects.fontSize.addEventListener('change', () => {
-            window.localStorage.setItem('st-font-size', document.documentElement.dataset.fontSize = this.selects.fontSize.value);
-        });
-        this.checkboxes.settings.addEventListener('click', () => {
-            if (this.checkboxes.settings.classList.toggle('checked')) {
-                this.forms.settings.classList.remove('hide');
-            }
-            else {
-                this.forms.settings.classList.add('hide');
-            }
-        });
-        const params = new URLSearchParams(location.search);
-        const focusURL = params.get('focus-url') ?? document.documentElement.dataset.focusUrl ?? '';
-        let focusLine = Number(params.get('focus-line') ?? document.documentElement.dataset.focusLine ?? '');
-        if (!isFinite(focusLine)) {
-            focusLine = 0;
+export function createNamedElement(name, element) {
+    const line = document.createElement('div');
+    const label = document.createElement('div');
+    label.textContent = name;
+    line.append(label);
+    line.append(element);
+    return line;
+}
+export async function createViewer() {
+    const { element, main, sideContent } = createLRStruct();
+    const style = document.createElement('style');
+    const article = document.createElement('article');
+    const nav = document.createElement('nav');
+    const colorScheme = document.createElement('select');
+    const fontSize = document.createElement('select');
+    const panel = document.createElement('div');
+    const settingsButton = document.createElement('div');
+    const settings = document.createElement('div');
+    settings.classList.add('hide');
+    const dblClickLineListeners = [];
+    const content = {};
+    main.append(article);
+    sideContent.append(nav);
+    sideContent.append(panel);
+    panel.append(settingsButton);
+    panel.append(settings);
+    settings.append(createNamedElement('Color Scheme', colorScheme));
+    settings.append(createNamedElement('Font Size', fontSize));
+    colorScheme.innerHTML = '<option>auto</option><option>dark</option><option>light</option>';
+    fontSize.innerHTML = '<option>small</option><option>medium</option><option>large</option>';
+    document.documentElement.dataset.colorScheme
+        = colorScheme.value
+            = window.localStorage.getItem('st-color-scheme')
+                ?? document.documentElement.dataset.colorScheme
+                ?? 'auto';
+    document.documentElement.dataset.fontSize
+        = fontSize.value
+            = window.localStorage.getItem('st-font-size')
+                ?? document.documentElement.dataset.fontSize
+                ?? 'small';
+    colorScheme.addEventListener('change', () => {
+        window.localStorage.setItem('st-color-scheme', document.documentElement.dataset.colorScheme = colorScheme.value);
+    });
+    fontSize.addEventListener('change', () => {
+        window.localStorage.setItem('st-font-size', document.documentElement.dataset.fontSize = fontSize.value);
+    });
+    settingsButton.addEventListener('click', () => {
+        if (settingsButton.classList.toggle('checked')) {
+            settings.classList.remove('hide');
         }
-        let focusId = decodeURIComponent(location.hash);
-        if (focusId.length === 0) {
-            focusId = document.documentElement.dataset.focusId ?? '';
+        else {
+            settings.classList.add('hide');
         }
-        else if (focusId.startsWith('#'))
-            (focusId = focusId.slice(1));
-        const string = params.get('string') ?? document.documentElement.dataset.string ?? '';
-        const src = params.get('src') ?? document.documentElement.dataset.src ?? '';
-        if (string.length > 0) {
-            this.loadString(string, focusLine, focusId);
-            return;
-        }
-        if (src.length > 0) {
-            this.load([src], focusURL, focusLine, focusId);
-            return;
-        }
-    }
-    async initParts(parts, partLengths, focusURL, focusLine, focusId) {
-        if (parts.length === 0
-            || this.article.children.length === 0) {
+    });
+    async function initParts(parts, partLengths, focusURL, focusLine, focusId) {
+        if (parts.length === 0 || article.children.length === 0) {
             return;
         }
         let line = 0;
@@ -92,10 +65,10 @@ export class Viewer extends LRStruct {
             const partLength = partLengths[i];
             const { dir } = parts[i];
             for (let partialLine = 0; partialLine < partLength; partialLine++) {
-                const lineEle = this.article.children[line];
+                const lineEle = article.children[line];
                 const staticLine = line;
                 lineEle.addEventListener('dblclick', async () => {
-                    for (const listener of this.dblClickLineListeners) {
+                    for (const listener of dblClickLineListeners) {
                         await listener(staticLine, dir, partialLine);
                     }
                 });
@@ -128,12 +101,12 @@ export class Viewer extends LRStruct {
         if (focusLine < 0) {
             focusLine = 0;
         }
-        else if (focusLine >= this.article.children.length) {
-            focusLine = this.article.children.length - 1;
+        else if (focusLine >= article.children.length) {
+            focusLine = article.children.length - 1;
         }
-        let focusEle = this.article.element;
+        let focusEle = article;
         if (focusLine !== 0) {
-            const div = this.article.children[focusLine];
+            const div = article.children[focusLine];
             if (div !== undefined) {
                 focusEle = div;
             }
@@ -144,7 +117,7 @@ export class Viewer extends LRStruct {
                 focusEle = anchor;
             }
         }
-        if (focusEle !== this.article.element) {
+        if (focusEle !== article) {
             let operated = false;
             const l = () => {
                 operated = true;
@@ -168,7 +141,7 @@ export class Viewer extends LRStruct {
             removeEventListener('click', l);
         }
     }
-    async load(urls, focusURL = '', focusLine = 0, focusId = '') {
+    async function load(urls, focusURL = '', focusLine = 0, focusId = '') {
         const parts = [];
         for (const url of await urlsToAbsURLs(urls, location.href)) {
             try {
@@ -185,35 +158,74 @@ export class Viewer extends LRStruct {
                 console.log(err);
             }
         }
-        const { documentFragment, partLengths, compiler, doc } = await multiCompile(parts, {
+        const result = await multiCompile(parts, {
             builtInTagToUnitCompiler: tagToUnitCompiler,
-            style: this.customStyle
+            style
         });
-        this.compiler = compiler;
-        this.doc = doc;
-        document.title = compiler.context.title;
-        this.article.element.innerHTML = '';
-        this.article.append(documentFragment);
-        this.headingTree.element.innerHTML = '';
-        this.headingTree.append(headingTreeToElement(extractHeadingTree(compiler.context)));
-        await this.initParts(parts, partLengths, focusURL, focusLine, focusId);
+        content.compiler = result.compiler;
+        content.doc = result.doc;
+        content.partLengths = result.partLengths;
+        document.title = result.compiler.context.title;
+        article.innerHTML = '';
+        article.append(result.documentFragment);
+        nav.innerHTML = '';
+        nav.append(headingTreeToElement(extractHeadingTree(result.compiler.context)));
+        await initParts(parts, result.partLengths, focusURL, focusLine, focusId);
     }
-    async loadString(string, focusLine = 0, focusId = '') {
+    async function loadString(string, focusLine = 0, focusId = '') {
         const result = await compile(string, location.href, {
             builtInTagToUnitCompiler: tagToUnitCompiler,
-            style: this.customStyle
+            style
         });
         if (result === undefined) {
             return;
         }
-        const { documentFragment, compiler, doc } = result;
-        this.compiler = compiler;
-        this.doc = doc;
-        document.title = compiler.context.title;
-        this.article.element.innerHTML = '';
-        this.article.append(documentFragment);
-        this.headingTree.element.innerHTML = '';
-        this.headingTree.append(headingTreeToElement(extractHeadingTree(compiler.context)));
-        await this.initParts([{ string, dir: location.href }], [this.article.children.length], '', focusLine, focusId);
+        content.compiler = result.compiler;
+        content.doc = result.doc;
+        document.title = result.compiler.context.title;
+        article.innerHTML = '';
+        article.append(result.documentFragment);
+        nav.innerHTML = '';
+        nav.append(headingTreeToElement(extractHeadingTree(result.compiler.context)));
+        await initParts([{ string, dir: location.href }], [article.children.length], '', focusLine, focusId);
     }
+    async function autoLoad() {
+        const params = new URLSearchParams(location.search);
+        const focusURL = params.get('focus-url') ?? document.documentElement.dataset.focusUrl ?? '';
+        let focusLine = Number(params.get('focus-line') ?? document.documentElement.dataset.focusLine ?? '');
+        if (!isFinite(focusLine) || focusLine % 1 !== 0) {
+            focusLine = 0;
+        }
+        let focusId = decodeURIComponent(location.hash);
+        if (focusId.length === 0) {
+            focusId = document.documentElement.dataset.focusId ?? '';
+        }
+        else if (focusId.startsWith('#'))
+            (focusId = focusId.slice(1));
+        const string = params.get('string') ?? document.documentElement.dataset.string ?? '';
+        const src = params.get('src') ?? document.documentElement.dataset.src ?? '';
+        if (string.length > 0) {
+            await loadString(string, focusLine, focusId);
+            return;
+        }
+        if (src.length > 0) {
+            await load([src], focusURL, focusLine, focusId);
+        }
+    }
+    return {
+        element,
+        style,
+        main,
+        sideContent,
+        article,
+        nav,
+        panel,
+        settings,
+        content,
+        dblClickLineListeners,
+        initParts,
+        load,
+        loadString,
+        autoLoad
+    };
 }
