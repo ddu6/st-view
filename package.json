@@ -20,7 +20,7 @@
   "dependencies": {
     "@ddu6/stc": "^0.13.0",
     "@ddu6/stui": "^0.6.0",
-    "st-std": "^0.16.1",
+    "st-std": "^0.16.2",
     "stdn": "^0.3.1"
   },
   "engines": {
