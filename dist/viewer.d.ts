@@ -5,7 +5,7 @@ interface Part {
     dir: string;
 }
 export declare function createNamedElement(name: string, element: Element): HTMLDivElement;
-export declare function createViewer(): Promise<{
+export declare function createViewer(): {
     element: HTMLDivElement;
     style: HTMLStyleElement;
     main: HTMLElement;
@@ -24,5 +24,5 @@ export declare function createViewer(): Promise<{
     load: (urls: string[], focusURL?: string, focusLine?: number, focusId?: string) => Promise<void>;
     loadString: (string: string, focusLine?: number, focusId?: string) => Promise<void>;
     autoLoad: () => Promise<void>;
-}>;
+};
 export {};

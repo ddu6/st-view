@@ -10,7 +10,7 @@ export function createNamedElement(name, element) {
     line.append(element);
     return line;
 }
-export async function createViewer() {
+export function createViewer() {
     const { element, main, sideContent } = createLRStruct();
     const style = document.createElement('style');
     const article = document.createElement('article');
