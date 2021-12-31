@@ -15,8 +15,9 @@ export function createNamedElement(name:string,element:Element,document:Document
     line.append(element)
     return line
 }
-export function createViewer(options:LRStructOptions){
-    const {document,location,addEventListener}=options.window??window
+export function createViewer(options:LRStructOptions={}){
+    const window0=options.window??window
+    const {document,location,localStorage,addEventListener}=window0
     const {element,main,sideContent}=createLRStruct()
     const style=document.createElement('style')
     const article=document.createElement('article')
@@ -46,22 +47,22 @@ export function createViewer(options:LRStructOptions){
     })
     document.documentElement.dataset.colorScheme
         =colorScheme.value
-        =window.localStorage.getItem('st-color-scheme')
+        =localStorage.getItem('st-color-scheme')
         ??document.documentElement.dataset.colorScheme
         ??'auto'
     document.documentElement.dataset.fontSize
         =fontSize.value
-        =window.localStorage.getItem('st-font-size')
+        =localStorage.getItem('st-font-size')
         ??document.documentElement.dataset.fontSize
         ??'small'
     colorScheme.addEventListener('change',()=>{
-        window.localStorage.setItem(
+        localStorage.setItem(
             'st-color-scheme',
             document.documentElement.dataset.colorScheme=colorScheme.value
         )
     })
     fontSize.addEventListener('change',()=>{
-        window.localStorage.setItem(
+        localStorage.setItem(
             'st-font-size',
             document.documentElement.dataset.fontSize=fontSize.value
         )
@@ -155,24 +156,30 @@ export function createViewer(options:LRStructOptions){
         }
     }
     async function load(urls:string[],focusURL?:string,focusLine?:number,focusId?:string){
-        const parts:Part[]=[]
+        const partPromises:Promise<Part[]>[]=[]
         for(const url of await urlsToAbsURLs(urls,location.href)){
-            try{
-                const res=await window.fetch(url)
-                if(!res.ok){
-                    continue
+            partPromises.push((async ()=>{
+                try{
+                    const res=await fetch(url)
+                    if(!res.ok){
+                        return []
+                    }
+                    return [{
+                        string:await res.text(),
+                        dir:url
+                    }]
+                }catch(err){
+                    console.log(err)
+                    return []
                 }
-                parts.push({
-                    string:await res.text(),
-                    dir:url
-                })
-            }catch(err){
-                console.log(err)
-            }
+            })())
         }
+        const parts=(await Promise.all(partPromises)).flat()
         const result=await multiCompile(parts,{
             builtInTagToUnitCompiler:tagToUnitCompiler,
-            style
+            style,
+            root:window0,
+            window:window0
         })
         content.compiler=result.compiler
         content.doc=result.doc
@@ -187,7 +194,9 @@ export function createViewer(options:LRStructOptions){
     async function loadString(string:string,focusLine?:number,focusId?:string){
         const result=await compile(string,location.href,{
             builtInTagToUnitCompiler:tagToUnitCompiler,
-            style
+            style,
+            root:window0,
+            window:window0
         })
         if(result===undefined){
             return

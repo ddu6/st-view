@@ -10,8 +10,9 @@ export function createNamedElement(name, element, document) {
     line.append(element);
     return line;
 }
-export function createViewer(options) {
-    const { document, location, addEventListener } = options.window ?? window;
+export function createViewer(options = {}) {
+    const window0 = options.window ?? window;
+    const { document, location, localStorage, addEventListener } = window0;
     const { element, main, sideContent } = createLRStruct();
     const style = document.createElement('style');
     const article = document.createElement('article');
@@ -42,19 +43,19 @@ export function createViewer(options) {
     });
     document.documentElement.dataset.colorScheme
         = colorScheme.value
-            = window.localStorage.getItem('st-color-scheme')
+            = localStorage.getItem('st-color-scheme')
                 ?? document.documentElement.dataset.colorScheme
                 ?? 'auto';
     document.documentElement.dataset.fontSize
         = fontSize.value
-            = window.localStorage.getItem('st-font-size')
+            = localStorage.getItem('st-font-size')
                 ?? document.documentElement.dataset.fontSize
                 ?? 'small';
     colorScheme.addEventListener('change', () => {
-        window.localStorage.setItem('st-color-scheme', document.documentElement.dataset.colorScheme = colorScheme.value);
+        localStorage.setItem('st-color-scheme', document.documentElement.dataset.colorScheme = colorScheme.value);
     });
     fontSize.addEventListener('change', () => {
-        window.localStorage.setItem('st-font-size', document.documentElement.dataset.fontSize = fontSize.value);
+        localStorage.setItem('st-font-size', document.documentElement.dataset.fontSize = fontSize.value);
     });
     const dblClickLineListeners = [];
     const content = {};
@@ -138,25 +139,31 @@ export function createViewer(options) {
         }
     }
     async function load(urls, focusURL, focusLine, focusId) {
-        const parts = [];
+        const partPromises = [];
         for (const url of await urlsToAbsURLs(urls, location.href)) {
-            try {
-                const res = await window.fetch(url);
-                if (!res.ok) {
-                    continue;
+            partPromises.push((async () => {
+                try {
+                    const res = await fetch(url);
+                    if (!res.ok) {
+                        return [];
+                    }
+                    return [{
+                            string: await res.text(),
+                            dir: url
+                        }];
                 }
-                parts.push({
-                    string: await res.text(),
-                    dir: url
-                });
-            }
-            catch (err) {
-                console.log(err);
-            }
+                catch (err) {
+                    console.log(err);
+                    return [];
+                }
+            })());
         }
+        const parts = (await Promise.all(partPromises)).flat();
         const result = await multiCompile(parts, {
             builtInTagToUnitCompiler: tagToUnitCompiler,
-            style
+            style,
+            root: window0,
+            window: window0
         });
         content.compiler = result.compiler;
         content.doc = result.doc;
@@ -171,7 +178,9 @@ export function createViewer(options) {
     async function loadString(string, focusLine, focusId) {
         const result = await compile(string, location.href, {
             builtInTagToUnitCompiler: tagToUnitCompiler,
-            style
+            style,
+            root: window0,
+            window: window0
         });
         if (result === undefined) {
             return;

@@ -6,7 +6,7 @@ interface Part {
     dir: string;
 }
 export declare function createNamedElement(name: string, element: Element, document: Document): HTMLDivElement;
-export declare function createViewer(options: LRStructOptions): {
+export declare function createViewer(options?: LRStructOptions): {
     element: HTMLDivElement;
     style: HTMLStyleElement;
     main: HTMLElement;
