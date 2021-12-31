@@ -18,7 +18,7 @@ export function extractHeadingTree(context) {
         href: '#'
     }, array);
 }
-export function headingTreeToElement(tree) {
+export function headingTreeToElement(tree, document) {
     const element = document.createElement('div');
     const data = document.createElement('div');
     const children = document.createElement('div');
@@ -38,7 +38,7 @@ export function headingTreeToElement(tree) {
     data.append(mark);
     data.append(content);
     for (const child of tree.children) {
-        children.append(headingTreeToElement(child));
+        children.append(headingTreeToElement(child, document));
     }
     mark.addEventListener('click', () => {
         element.classList.toggle('folded');

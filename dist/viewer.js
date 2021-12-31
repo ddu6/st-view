@@ -1,8 +1,8 @@
-import { compile, isRelURL, multiCompile, relURLToAbsURL, urlsToAbsURLs } from '@ddu6/stc';
+import { compile, isRelURL, multiCompile, urlsToAbsURLs } from '@ddu6/stc';
 import { createLRStruct } from '@ddu6/stui';
 import { tagToUnitCompiler } from 'st-std';
 import { extractHeadingTree, headingTreeToElement } from './heading-tree';
-export function createNamedElement(name, element) {
+export function createNamedElement(name, element, document) {
     const line = document.createElement('div');
     const label = document.createElement('div');
     label.textContent = name;
@@ -10,7 +10,8 @@ export function createNamedElement(name, element) {
     line.append(element);
     return line;
 }
-export function createViewer() {
+export function createViewer(options) {
+    const { document, location, addEventListener } = options.window ?? window;
     const { element, main, sideContent } = createLRStruct();
     const style = document.createElement('style');
     const article = document.createElement('article');
@@ -29,8 +30,8 @@ export function createViewer() {
     sideContent.append(panel);
     panel.append(settingsButton);
     panel.append(settings);
-    settings.append(createNamedElement('Color Scheme', colorScheme));
-    settings.append(createNamedElement('Font Size', fontSize));
+    settings.append(createNamedElement('Color Scheme', colorScheme, document));
+    settings.append(createNamedElement('Font Size', fontSize, document));
     settingsButton.addEventListener('click', () => {
         if (settingsButton.classList.toggle('pushing')) {
             settings.classList.remove('hide');
@@ -77,42 +78,36 @@ export function createViewer() {
             }
         }
         let focusPart = 0;
-        if (focusURL.length > 0) {
+        if (focusURL !== undefined) {
             if (isRelURL(focusURL)) {
-                focusURL = relURLToAbsURL(focusURL, location.href);
+                focusURL = new URL(focusURL, location.href).href;
             }
+            const { origin, pathname } = new URL(focusURL);
             for (let i = 0; i < parts.length; i++) {
-                const { dir } = parts[i];
-                try {
-                    const tmp0 = new URL(focusURL);
-                    const tmp1 = new URL(dir);
-                    if (tmp0.origin === tmp1.origin && tmp0.pathname === tmp1.pathname) {
-                        focusPart = i;
-                        break;
-                    }
-                }
-                catch (err) {
-                    console.log(err);
+                const url = new URL(parts[i].dir);
+                if (url.origin === origin && url.pathname === pathname) {
+                    focusPart = i;
+                    break;
                 }
             }
-        }
-        for (let i = 0; i < focusPart; i++) {
-            focusLine += partLengths[i];
-        }
-        if (focusLine < 0) {
-            focusLine = 0;
-        }
-        else if (focusLine >= article.children.length) {
-            focusLine = article.children.length - 1;
         }
         let focusEle = article;
-        if (focusLine !== 0) {
+        if (focusLine !== undefined) {
+            for (let i = 0; i < focusPart; i++) {
+                focusLine += partLengths[i];
+            }
+            if (focusLine < 0) {
+                focusLine = 0;
+            }
+            else if (focusLine >= article.children.length) {
+                focusLine = article.children.length - 1;
+            }
             const div = article.children[focusLine];
             if (div !== undefined) {
                 focusEle = div;
             }
         }
-        if (focusId.length > 0) {
+        if (focusId !== undefined) {
             const anchor = focusEle.querySelector(`[id=${JSON.stringify(focusId)}]`);
             if (anchor !== null) {
                 focusEle = anchor;
@@ -142,7 +137,7 @@ export function createViewer() {
             removeEventListener('click', l);
         }
     }
-    async function load(urls, focusURL = '', focusLine = 0, focusId = '') {
+    async function load(urls, focusURL, focusLine, focusId) {
         const parts = [];
         for (const url of await urlsToAbsURLs(urls, location.href)) {
             try {
@@ -170,10 +165,10 @@ export function createViewer() {
         article.innerHTML = '';
         article.append(result.documentFragment);
         nav.innerHTML = '';
-        nav.append(headingTreeToElement(extractHeadingTree(result.compiler.context)));
+        nav.append(headingTreeToElement(extractHeadingTree(result.compiler.context), document));
         await initParts(parts, result.partLengths, focusURL, focusLine, focusId);
     }
-    async function loadString(string, focusLine = 0, focusId = '') {
+    async function loadString(string, focusLine, focusId) {
         const result = await compile(string, location.href, {
             builtInTagToUnitCompiler: tagToUnitCompiler,
             style
@@ -187,29 +182,33 @@ export function createViewer() {
         article.innerHTML = '';
         article.append(result.documentFragment);
         nav.innerHTML = '';
-        nav.append(headingTreeToElement(extractHeadingTree(result.compiler.context)));
-        await initParts([{ string, dir: location.href }], [article.children.length], '', focusLine, focusId);
+        nav.append(headingTreeToElement(extractHeadingTree(result.compiler.context), document));
+        await initParts([{ string, dir: location.href }], [article.children.length], undefined, focusLine, focusId);
     }
     async function autoLoad() {
         const params = new URLSearchParams(location.search);
-        const focusURL = params.get('focus-url') ?? document.documentElement.dataset.focusUrl ?? '';
-        let focusLine = Number(params.get('focus-line') ?? document.documentElement.dataset.focusLine ?? '');
-        if (!isFinite(focusLine) || focusLine % 1 !== 0) {
-            focusLine = 0;
+        const focusURL = params.get('focus-url') ?? document.documentElement.dataset.focusUrl;
+        const focusLineStr = params.get('focus-line') ?? document.documentElement.dataset.focusLine;
+        let focusLine;
+        if (focusLineStr !== undefined) {
+            focusLine = Number(focusLineStr);
+            if (!isFinite(focusLine) || focusLine % 1 !== 0) {
+                focusLine = undefined;
+            }
         }
-        let focusId = decodeURIComponent(location.hash);
-        if (focusId.length === 0) {
-            focusId = document.documentElement.dataset.focusId ?? '';
+        let focusId;
+        if (location.hash.length > 1) {
+            focusId = decodeURIComponent(location.hash.slice(1));
         }
-        else if (focusId.startsWith('#'))
-            (focusId = focusId.slice(1));
-        const string = params.get('string') ?? document.documentElement.dataset.string ?? '';
-        const src = params.get('src') ?? document.documentElement.dataset.src ?? '';
-        if (string.length > 0) {
+        else
+            (focusId = document.documentElement.dataset.focusId);
+        const string = params.get('string') ?? document.documentElement.dataset.string;
+        const src = params.get('src') ?? document.documentElement.dataset.src;
+        if (string !== undefined) {
             await loadString(string, focusLine, focusId);
             return;
         }
-        if (src.length > 0) {
+        if (src !== undefined) {
             await load([src], focusURL, focusLine, focusId);
         }
     }
