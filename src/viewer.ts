@@ -17,8 +17,8 @@ export function createNamedElement(name:string,element:Element,document:Document
 }
 export function createViewer(options:LRStructOptions={}){
     const window0=options.window??window
-    const {document,location,localStorage,addEventListener}=window0
-    const {element,main,sideContent}=createLRStruct()
+    const {document,location,addEventListener}=window0
+    const {element,main,sideContent}=createLRStruct({window:window0})
     const style=document.createElement('style')
     const article=document.createElement('article')
     const nav=document.createElement('nav')
