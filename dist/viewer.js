@@ -2,7 +2,7 @@ import { compile, isRelURL, multiCompile, urlsToAbsURLs } from '@ddu6/stc';
 import { createLRStruct } from '@ddu6/stui';
 import { tagToUnitCompiler } from 'st-std';
 import { extractHeadingTree, headingTreeToElement } from './heading-tree';
-export function createNamedElement(name, element, document) {
+export function createNamedElement(name, element) {
     const line = document.createElement('div');
     const label = document.createElement('div');
     label.textContent = name;
@@ -10,10 +10,8 @@ export function createNamedElement(name, element, document) {
     line.append(element);
     return line;
 }
-export function createViewer(options = {}) {
-    const window0 = options.window ?? window;
-    const { document, localStorage, location, addEventListener } = window0;
-    const { element, main, sideContent } = createLRStruct(options);
+export function createViewer() {
+    const { element, main, sideContent } = createLRStruct();
     const style = document.createElement('style');
     const article = document.createElement('article');
     const nav = document.createElement('nav');
@@ -31,8 +29,8 @@ export function createViewer(options = {}) {
     sideContent.append(panel);
     panel.append(settingsButton);
     panel.append(settings);
-    settings.append(createNamedElement('Color Scheme', colorScheme, document));
-    settings.append(createNamedElement('Font Size', fontSize, document));
+    settings.append(createNamedElement('Color Scheme', colorScheme));
+    settings.append(createNamedElement('Font Size', fontSize));
     settingsButton.addEventListener('click', () => {
         if (settingsButton.classList.toggle('pushing')) {
             settings.classList.remove('hide');
@@ -161,9 +159,7 @@ export function createViewer(options = {}) {
         const parts = (await Promise.all(partPromises)).flat();
         const result = await multiCompile(parts, {
             builtInTagToUnitCompiler: tagToUnitCompiler,
-            style,
-            root: window0,
-            window: window0
+            style
         });
         content.compiler = result.compiler;
         content.doc = result.doc;
@@ -178,9 +174,7 @@ export function createViewer(options = {}) {
     async function loadString(string, focusLine, focusId) {
         const result = await compile(string, location.href, {
             builtInTagToUnitCompiler: tagToUnitCompiler,
-            style,
-            root: window0,
-            window: window0
+            style
         });
         if (result === undefined) {
             return;

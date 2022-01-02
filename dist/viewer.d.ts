@@ -1,12 +1,11 @@
 import type { STDN } from 'stdn';
 import { Compiler } from '@ddu6/stc';
-import { LRStructOptions } from '@ddu6/stui';
 interface Part {
     string: string;
     dir: string;
 }
-export declare function createNamedElement(name: string, element: Element, document: Document): HTMLDivElement;
-export declare function createViewer(options?: LRStructOptions): {
+export declare function createNamedElement(name: string, element: Element): HTMLDivElement;
+export declare function createViewer(): {
     element: HTMLDivElement;
     style: HTMLStyleElement;
     main: HTMLElement;
