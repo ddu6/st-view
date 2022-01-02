@@ -184,7 +184,7 @@ export function createViewer(){
         article.innerHTML=''
         article.append(result.documentFragment)
         nav.innerHTML=''
-        nav.append(headingTreeToElement(extractHeadingTree(result.compiler.context),document))
+        nav.append(headingTreeToElement(extractHeadingTree(result.compiler.context)))
         await initParts(parts,result.partLengths,focusURL,focusLine,focusId)
     }
     async function loadString(string:string,focusLine?:number,focusId?:string){
@@ -201,7 +201,7 @@ export function createViewer(){
         article.innerHTML=''
         article.append(result.documentFragment)
         nav.innerHTML=''
-        nav.append(headingTreeToElement(extractHeadingTree(result.compiler.context),document))
+        nav.append(headingTreeToElement(extractHeadingTree(result.compiler.context)))
         await initParts([{string,dir:location.href}],[article.children.length],undefined,focusLine,focusId)
     }
     async function autoLoad(){

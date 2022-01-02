@@ -8,4 +8,4 @@ export declare function extractHeadingTree(context: Context): Tree<{
     string: string;
     href: string;
 }>;
-export declare function headingTreeToElement(tree: Tree<HeadingTreeItem>, document: Document): HTMLDivElement;
+export declare function headingTreeToElement(tree: Tree<HeadingTreeItem>): HTMLDivElement;
