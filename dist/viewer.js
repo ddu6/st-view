@@ -117,10 +117,10 @@ export function createViewer() {
             const l = () => {
                 operated = true;
             };
-            addEventListener('wheel', l);
-            addEventListener('touchmove', l);
-            addEventListener('keydown', l);
-            addEventListener('click', l);
+            addEventListener('wheel', l, { once: true });
+            addEventListener('touchmove', l, { once: true });
+            addEventListener('keydown', l, { once: true });
+            addEventListener('click', l, { once: true });
             for (let i = 0; i < 100; i++) {
                 if (operated) {
                     break;
@@ -130,10 +130,6 @@ export function createViewer() {
                 }
                 await new Promise(r => setTimeout(r, 100));
             }
-            removeEventListener('wheel', l);
-            removeEventListener('touchmove', l);
-            removeEventListener('keydown', l);
-            removeEventListener('click', l);
         }
     }
     async function load(urls, focusURL, focusLine, focusId) {
