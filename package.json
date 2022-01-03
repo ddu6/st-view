@@ -19,8 +19,8 @@
   },
   "dependencies": {
     "@ddu6/stc": "^0.16.0",
-    "@ddu6/stui": "^0.8.0",
-    "st-std": "^0.19.1",
+    "@ddu6/stui": "^0.8.1",
+    "st-std": "^0.19.2",
     "stdn": "^0.3.1"
   },
   "engines": {
