@@ -18,3 +18,30 @@ body>.lr-struct>aside>.content {
     height: 100%;
     overflow: auto;
 }
+
+body>.lr-struct>aside>.content>* {
+    margin: var(--length-padding);
+}
+
+body>.lr-struct>aside>.content details {
+    margin-left: var(--length-gap);
+    padding-left: var(--length-gap);
+}
+
+body>.lr-struct>aside>.content details>summary {
+    list-style-position: outside;
+}
+
+body>.lr-struct>aside>.content>nav>details details[open]>summary {
+    list-style-type: disc;
+}
+
+body>.lr-struct>aside>.content>div>details>div {
+    display: grid;
+    grid-template-columns: 1fr;
+    margin: var(--length-gap) 0;
+}
+
+body>.lr-struct>aside>.content>div>details>div>div {
+    font-size: var(--length-font-log);
+}

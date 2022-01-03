@@ -23,29 +23,18 @@ export function extractHeadingTree(context: Context) {
     }, array)
 }
 export function headingTreeToElement(tree: Tree<HeadingTreeItem>) {
-    const element = document.createElement('div')
-    const data = document.createElement('div')
-    const children = document.createElement('div')
-    const mark = document.createElement('div')
-    const content = document.createElement('a')
-    element.classList.add('tree')
-    data.classList.add('data')
-    children.classList.add('children')
-    mark.classList.add('mark')
-    content.classList.add('content')
+    const details = document.createElement('details')
+    const summary = document.createElement('summary')
+    const a = document.createElement('a')
+    details.open = true
     if (tree.data !== undefined) {
-        content.href = tree.data.href
-        content.textContent = tree.data.string
+        a.href = tree.data.href
+        a.textContent = tree.data.string
     }
-    element.append(data)
-    element.append(children)
-    data.append(mark)
-    data.append(content)
+    details.append(summary)
+    summary.append(a)
     for (const child of tree.children) {
-        children.append(headingTreeToElement(child))
+        details.append(headingTreeToElement(child))
     }
-    mark.addEventListener('click', () => {
-        element.classList.toggle('folded')
-    })
-    return element
+    return details
 }

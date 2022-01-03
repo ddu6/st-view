@@ -22,7 +22,6 @@ export function headingTreeToElement(tree) {
     const details = document.createElement('details');
     const summary = document.createElement('summary');
     const a = document.createElement('a');
-    details.open = true;
     if (tree.data !== undefined) {
         a.href = tree.data.href;
         a.textContent = tree.data.string;

@@ -21,8 +21,8 @@ export function createViewer() {
     const article = document.createElement('article')
     const nav = document.createElement('nav')
     const panel = document.createElement('div')
-    const settings=document.createElement('details')
-    const summary=document.createElement('summary')
+    const settings = document.createElement('details')
+    const summary = document.createElement('summary')
     const colorScheme = document.createElement('select')
     const fontSize = document.createElement('select')
     summary.textContent = 'Settings'
