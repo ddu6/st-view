@@ -24,8 +24,7 @@ body>.lr-struct>aside>.content>* {
 }
 
 body>.lr-struct>aside>.content details {
-    margin-left: var(--length-gap);
-    padding-left: var(--length-gap);
+    padding-left: var(--length-padding);
 }
 
 body>.lr-struct>aside>.content details>summary {
