@@ -16,29 +16,20 @@ export function createViewer() {
     const article = document.createElement('article');
     const nav = document.createElement('nav');
     const panel = document.createElement('div');
-    const settingsButton = document.createElement('button');
-    const settings = document.createElement('div');
+    const settings = document.createElement('details');
+    const summary = document.createElement('summary');
     const colorScheme = document.createElement('select');
     const fontSize = document.createElement('select');
-    settingsButton.textContent = 'Settings';
-    settings.classList.add('hide');
+    summary.textContent = 'Settings';
     colorScheme.innerHTML = '<option>auto</option><option>dark</option><option>light</option>';
     fontSize.innerHTML = '<option>small</option><option>medium</option><option>large</option>';
     main.append(article);
     sideContent.append(nav);
     sideContent.append(panel);
-    panel.append(settingsButton);
     panel.append(settings);
+    settings.append(summary);
     settings.append(createNamedElement('Color Scheme', colorScheme));
     settings.append(createNamedElement('Font Size', fontSize));
-    settingsButton.addEventListener('click', () => {
-        if (settingsButton.classList.toggle('pushing')) {
-            settings.classList.remove('hide');
-        }
-        else {
-            settings.classList.add('hide');
-        }
-    });
     document.documentElement.dataset.colorScheme
         = colorScheme.value
             = localStorage.getItem('st-color-scheme')

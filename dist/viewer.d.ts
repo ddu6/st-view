@@ -13,7 +13,7 @@ export declare function createViewer(): {
     article: HTMLElement;
     nav: HTMLElement;
     panel: HTMLDivElement;
-    settings: HTMLDivElement;
+    settings: HTMLDetailsElement;
     content: {
         compiler?: Compiler | undefined;
         doc?: STDN | undefined;
