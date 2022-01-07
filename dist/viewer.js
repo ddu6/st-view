@@ -47,7 +47,6 @@ export function createViewer() {
         localStorage.setItem('st-font-size', document.documentElement.dataset.fontSize = fontSize.value);
     });
     const dblClickLineListeners = [];
-    const content = {};
     async function initParts(parts, partLengths, focusURL, focusLine, focusId) {
         if (parts.length === 0 || article.children.length === 0) {
             return;
@@ -148,9 +147,6 @@ export function createViewer() {
             builtInTagToUnitCompiler: tagToUnitCompiler,
             style
         });
-        content.compiler = result.compiler;
-        content.doc = result.doc;
-        content.partLengths = result.partLengths;
         document.title = result.compiler.context.title;
         article.innerHTML = '';
         article.append(result.documentFragment);
@@ -166,8 +162,6 @@ export function createViewer() {
         if (result === undefined) {
             return;
         }
-        content.compiler = result.compiler;
-        content.doc = result.doc;
         document.title = result.compiler.context.title;
         article.innerHTML = '';
         article.append(result.documentFragment);
@@ -211,7 +205,6 @@ export function createViewer() {
         nav,
         panel,
         settings,
-        content,
         dblClickLineListeners,
         initParts,
         load,
