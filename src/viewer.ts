@@ -1,5 +1,4 @@
-import type {STDN} from 'stdn'
-import {Compiler, compile, isRelURL, multiCompile, urlsToAbsURLs} from '@ddu6/stc'
+import {compile, isRelURL, multiCompile, urlsToAbsURLs} from '@ddu6/stc'
 import {createLRStruct} from '@ddu6/stui'
 import {tagToUnitCompiler} from 'st-std'
 import {extractHeadingTree, headingTreeToElement} from './heading-tree'
