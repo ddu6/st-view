@@ -1,7 +1,7 @@
 import { compile, isRelURL, multiCompile, urlsToAbsURLs } from '@ddu6/stc';
 import { tagToUnitCompiler } from 'st-std';
+import { createASStruct } from '@ddu6/stui';
 import { extractHeadingTree, headingTreeToElement } from './heading-tree';
-import { createASStruct } from './as-struct';
 export function createViewer() {
     const { element, main, sideContent, article, panel, settings } = createASStruct();
     const style = document.createElement('style');

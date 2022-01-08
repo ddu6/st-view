@@ -1,46 +1,12 @@
-body>.lr-struct>main>article {
-    display: flow-root;
-    margin: 0 auto;
-    margin-bottom: 100vh;
-    max-width: var(--length-width);
-    min-width: 100px;
-    padding: 0 var(--length-padding);
-}
-
-@media print {
-    body>.lr-struct>main>article {
-        margin: 0;
-        padding: 0;
-    }
-}
-
-body>.lr-struct>aside>.content {
-    height: 100%;
-    overflow: auto;
-}
-
-body>.lr-struct>aside>.content>* {
-    margin: var(--length-padding);
-}
-
-body>.lr-struct>aside>.content details {
+body>.lr-struct>aside>.content>nav details {
     padding-left: var(--length-padding);
 }
 
-body>.lr-struct>aside>.content details>summary {
+body>.lr-struct>aside>.content>nav details>summary {
     list-style-position: outside;
+    list-style-type: circle;
 }
 
-body>.lr-struct>aside>.content>nav>details details[open]>summary {
+body>.lr-struct>aside>.content>nav details[open]>summary {
     list-style-type: disc;
-}
-
-body>.lr-struct>aside>.content>div>details>div {
-    display: grid;
-    grid-template-columns: 1fr;
-    margin: var(--length-gap) 0;
-}
-
-body>.lr-struct>aside>.content>div>details>div>div {
-    font-size: var(--length-font-log);
 }
