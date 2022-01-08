@@ -2,7 +2,6 @@ interface Part {
     string: string;
     dir: string;
 }
-export declare function createNamedElement(name: string, element: Element): HTMLDivElement;
 export declare function createViewer(): {
     element: HTMLDivElement;
     style: HTMLStyleElement;

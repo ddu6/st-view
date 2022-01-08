@@ -1,61 +1,16 @@
 import {compile, isRelURL, multiCompile, urlsToAbsURLs} from '@ddu6/stc'
-import {createLRStruct} from '@ddu6/stui'
 import {tagToUnitCompiler} from 'st-std'
 import {extractHeadingTree, headingTreeToElement} from './heading-tree'
+import {createASStruct} from './as-struct'
 interface Part {
     string: string
     dir: string
 }
-export function createNamedElement(name: string, element: Element) {
-    const line = document.createElement('div')
-    const label = document.createElement('div')
-    label.textContent = name
-    line.append(label)
-    line.append(element)
-    return line
-}
 export function createViewer() {
-    const {element, main, sideContent} = createLRStruct()
+    const {element, main, sideContent, article, panel, settings} = createASStruct()
     const style = document.createElement('style')
-    const article = document.createElement('article')
     const nav = document.createElement('nav')
-    const panel = document.createElement('div')
-    const settings = document.createElement('details')
-    const summary = document.createElement('summary')
-    const colorScheme = document.createElement('select')
-    const fontSize = document.createElement('select')
-    summary.textContent = 'Settings'
-    colorScheme.innerHTML = '<option>auto</option><option>dark</option><option>light</option>'
-    fontSize.innerHTML = '<option>small</option><option>medium</option><option>large</option>'
-    main.append(article)
-    sideContent.append(nav)
-    sideContent.append(panel)
-    panel.append(settings)
-    settings.append(summary)
-    settings.append(createNamedElement('Color Scheme', colorScheme))
-    settings.append(createNamedElement('Font Size', fontSize))
-    document.documentElement.dataset.colorScheme
-        = colorScheme.value
-        = localStorage.getItem('st-color-scheme')
-        ?? document.documentElement.dataset.colorScheme
-        ?? 'auto'
-    document.documentElement.dataset.fontSize
-        = fontSize.value
-        = localStorage.getItem('st-font-size')
-        ?? document.documentElement.dataset.fontSize
-        ?? 'small'
-    colorScheme.addEventListener('change', () => {
-        localStorage.setItem(
-            'st-color-scheme',
-            document.documentElement.dataset.colorScheme = colorScheme.value
-        )
-    })
-    fontSize.addEventListener('change', () => {
-        localStorage.setItem(
-            'st-font-size',
-            document.documentElement.dataset.fontSize = fontSize.value
-        )
-    })
+    sideContent.prepend(nav)
     const dblClickLineListeners: ((
         line: number,
         url: string,
