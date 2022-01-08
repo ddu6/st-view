@@ -1,6 +1,6 @@
 {
   "name": "@ddu6/st-view",
-  "version": "0.21.3",
+  "version": "0.22.0",
   "description": "STDN Viewer",
   "main": "dist/mod.js",
   "scripts": {
