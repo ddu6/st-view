@@ -3,7 +3,7 @@ import { tagToUnitCompiler } from 'st-std';
 import { createASStruct } from '@ddu6/stui';
 import { extractHeadingTree, headingTreeToElement } from './heading-tree';
 export function createViewer() {
-    const { element, main, sideContent, article, panel, settings } = createASStruct();
+    const { element, main, sideContent, article, settings } = createASStruct();
     const style = document.createElement('style');
     const nav = document.createElement('nav');
     sideContent.prepend(nav);
@@ -164,7 +164,6 @@ export function createViewer() {
         sideContent,
         article,
         nav,
-        panel,
         settings,
         dblClickLineListeners,
         initParts,

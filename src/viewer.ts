@@ -7,7 +7,7 @@ interface Part {
     dir: string
 }
 export function createViewer() {
-    const {element, main, sideContent, article, panel, settings} = createASStruct()
+    const {element, main, sideContent, article, settings} = createASStruct()
     const style = document.createElement('style')
     const nav = document.createElement('nav')
     sideContent.prepend(nav)
@@ -170,7 +170,6 @@ export function createViewer() {
         sideContent,
         article,
         nav,
-        panel,
         settings,
         dblClickLineListeners,
         initParts,

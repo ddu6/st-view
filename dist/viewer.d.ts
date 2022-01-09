@@ -9,7 +9,6 @@ export declare function createViewer(): {
     sideContent: HTMLDivElement;
     article: HTMLElement;
     nav: HTMLElement;
-    panel: HTMLDivElement;
     settings: HTMLDetailsElement;
     dblClickLineListeners: ((line: number, url: string, partialLine: number) => Promise<void>)[];
     initParts: (parts: Part[], partLengths: number[], focusURL: string | undefined, focusLine: number | undefined, focusId: string | undefined) => Promise<void>;
