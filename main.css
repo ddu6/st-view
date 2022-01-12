@@ -1,4 +1,4 @@
-@import url(https://cdn.jsdelivr.net/gh/st-org/st-std@0.23.1/mod.js);
+@import url(https://cdn.jsdelivr.net/gh/st-org/st-std@0.23.3/mod.js);
 
 body>.lr-struct>aside>.content>nav details {
     padding-left: var(--length-padding);
