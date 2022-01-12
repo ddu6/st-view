@@ -1,13 +1,12 @@
-import { unitToInlinePlainString } from '@ddu6/stc';
 import { Tree } from './tree';
-export function extractHeadingTree(context) {
+export function extractHeadingTree(context, unitToInlinePlainString0) {
     const array = [];
     for (const indexInfo of context.indexInfoArray) {
         if (indexInfo.orbit === 'heading') {
             array.push({
                 level: indexInfo.index.length,
                 data: {
-                    string: unitToInlinePlainString(indexInfo.unit),
+                    string: unitToInlinePlainString0(indexInfo.unit),
                     href: '#' + encodeURIComponent(indexInfo.id)
                 }
             });

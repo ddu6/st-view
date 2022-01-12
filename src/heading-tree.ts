@@ -1,17 +1,17 @@
-import {Context, unitToInlinePlainString} from '@ddu6/stc'
+import type {Context, unitToInlinePlainString} from '@ddu6/stc'
 import {Tree, TreeItems} from './tree'
 export interface HeadingTreeItem {
     string: string
     href: string
 }
-export function extractHeadingTree(context: Context) {
+export function extractHeadingTree(context: Context, unitToInlinePlainString0: typeof unitToInlinePlainString) {
     const array: TreeItems<HeadingTreeItem> = []
     for (const indexInfo of context.indexInfoArray) {
         if (indexInfo.orbit === 'heading') {
             array.push({
                 level: indexInfo.index.length,
                 data: {
-                    string: unitToInlinePlainString(indexInfo.unit),
+                    string: unitToInlinePlainString0(indexInfo.unit),
                     href: '#' + encodeURIComponent(indexInfo.id)
                 }
             })

@@ -1,15 +1,13 @@
-import { compile, isRelURL, multiCompile, urlsToAbsURLs } from '@ddu6/stc';
-import { tagToUnitCompiler } from 'st-std';
-import { createASStruct } from '@ddu6/stui';
+import { getMod } from './import';
 import { extractHeadingTree, headingTreeToElement } from './heading-tree';
-export function createViewer() {
-    const { element, main, sideContent, article, settings } = createASStruct();
+export async function createViewer() {
+    const { element, main, sideContent, article, settings } = ((await getMod('stui')).createASStruct)();
     const style = document.createElement('style');
     const nav = document.createElement('nav');
     sideContent.prepend(nav);
     const dblClickLineListeners = [];
     const env = {};
-    async function initParts({ parts, partLengths, focusURL, focusLine, focusId }) {
+    async function initParts({ compiler, parts, partLengths, focusURL, focusLine, focusId }) {
         if (parts.length === 0 || article.children.length === 0) {
             return;
         }
@@ -30,7 +28,7 @@ export function createViewer() {
         }
         let focusPart = 0;
         if (focusURL !== undefined) {
-            if (isRelURL(focusURL)) {
+            if (compiler.urls.isRelURL(focusURL)) {
                 focusURL = new URL(focusURL, location.href).href;
             }
             const { origin, pathname } = new URL(focusURL);
@@ -85,6 +83,7 @@ export function createViewer() {
         }
     }
     async function load(urls, focusURL, focusLine, focusId) {
+        const { multiCompile, urlsToAbsURLs } = await getMod('stc');
         const partPromises = [];
         for (const url of await urlsToAbsURLs(urls, location.href)) {
             partPromises.push((async () => {
@@ -106,14 +105,14 @@ export function createViewer() {
         }
         const parts = (await Promise.all(partPromises)).flat();
         const { compiler, documentFragment, partLengths, stdn } = await multiCompile(parts, {
-            builtInTagToUnitCompiler: tagToUnitCompiler,
+            builtInTagToUnitCompiler: await getMod('ucs'),
             style
         });
         document.title = compiler.context.title;
         article.innerHTML = '';
         article.append(documentFragment);
         nav.innerHTML = '';
-        nav.append(headingTreeToElement(extractHeadingTree(compiler.context)));
+        nav.append(headingTreeToElement(extractHeadingTree(compiler.context, compiler.base.unitToInlinePlainString)));
         await initParts(env.content = {
             compiler,
             documentFragment,
@@ -126,8 +125,9 @@ export function createViewer() {
         });
     }
     async function loadString(string, focusLine, focusId) {
+        const { compile } = await getMod('stc');
         const result = await compile(string, location.href, {
-            builtInTagToUnitCompiler: tagToUnitCompiler,
+            builtInTagToUnitCompiler: await getMod('ucs'),
             style
         });
         if (result === undefined) {
@@ -138,7 +138,7 @@ export function createViewer() {
         article.innerHTML = '';
         article.append(documentFragment);
         nav.innerHTML = '';
-        nav.append(headingTreeToElement(extractHeadingTree(compiler.context)));
+        nav.append(headingTreeToElement(extractHeadingTree(compiler.context, compiler.base.unitToInlinePlainString)));
         await initParts(env.content = {
             compiler,
             documentFragment,
