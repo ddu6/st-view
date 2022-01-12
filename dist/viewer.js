@@ -8,7 +8,8 @@ export function createViewer() {
     const nav = document.createElement('nav');
     sideContent.prepend(nav);
     const dblClickLineListeners = [];
-    async function initParts(parts, partLengths, focusURL, focusLine, focusId) {
+    const env = {};
+    async function initParts({ parts, partLengths, focusURL, focusLine, focusId }) {
         if (parts.length === 0 || article.children.length === 0) {
             return;
         }
@@ -104,16 +105,25 @@ export function createViewer() {
             })());
         }
         const parts = (await Promise.all(partPromises)).flat();
-        const result = await multiCompile(parts, {
+        const { compiler, documentFragment, partLengths, stdn } = await multiCompile(parts, {
             builtInTagToUnitCompiler: tagToUnitCompiler,
             style
         });
-        document.title = result.compiler.context.title;
+        document.title = compiler.context.title;
         article.innerHTML = '';
-        article.append(result.documentFragment);
+        article.append(documentFragment);
         nav.innerHTML = '';
-        nav.append(headingTreeToElement(extractHeadingTree(result.compiler.context)));
-        await initParts(parts, result.partLengths, focusURL, focusLine, focusId);
+        nav.append(headingTreeToElement(extractHeadingTree(compiler.context)));
+        await initParts(env.content = {
+            compiler,
+            documentFragment,
+            parts,
+            partLengths,
+            stdn,
+            focusURL,
+            focusLine,
+            focusId
+        });
     }
     async function loadString(string, focusLine, focusId) {
         const result = await compile(string, location.href, {
@@ -123,12 +133,22 @@ export function createViewer() {
         if (result === undefined) {
             return;
         }
-        document.title = result.compiler.context.title;
+        const { compiler, documentFragment, stdn } = result;
+        document.title = compiler.context.title;
         article.innerHTML = '';
-        article.append(result.documentFragment);
+        article.append(documentFragment);
         nav.innerHTML = '';
-        nav.append(headingTreeToElement(extractHeadingTree(result.compiler.context)));
-        await initParts([{ string, dir: location.href }], [article.children.length], undefined, focusLine, focusId);
+        nav.append(headingTreeToElement(extractHeadingTree(compiler.context)));
+        await initParts(env.content = {
+            compiler,
+            documentFragment,
+            parts: [{ string, dir: location.href }],
+            partLengths: [stdn.length],
+            stdn,
+            focusURL: undefined,
+            focusLine,
+            focusId
+        });
     }
     async function autoLoad() {
         const params = new URLSearchParams(location.search);
@@ -166,6 +186,7 @@ export function createViewer() {
         nav,
         settings,
         dblClickLineListeners,
+        env,
         initParts,
         load,
         loadString,

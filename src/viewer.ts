@@ -1,10 +1,12 @@
-import {compile, isRelURL, multiCompile, urlsToAbsURLs} from '@ddu6/stc'
+import {compile, isRelURL, multiCompile, STDNPart, urlsToAbsURLs} from '@ddu6/stc'
 import {tagToUnitCompiler} from 'st-std'
 import {createASStruct} from '@ddu6/stui'
 import {extractHeadingTree, headingTreeToElement} from './heading-tree'
-interface Part {
-    string: string
-    dir: string
+export interface ViewerContent extends Awaited<ReturnType<typeof multiCompile>> {
+    parts: STDNPart[]
+    focusURL: string | undefined
+    focusLine: number | undefined
+    focusId: string | undefined
 }
 export function createViewer() {
     const {element, main, sideContent, article, settings} = createASStruct()
@@ -16,7 +18,10 @@ export function createViewer() {
         url: string,
         partialLine: number,
     ) => Promise<void>)[] = []
-    async function initParts(parts: Part[], partLengths: number[], focusURL: string | undefined, focusLine: number | undefined, focusId: string | undefined) {
+    const env: {
+        content?: ViewerContent
+    } = {}
+    async function initParts({parts, partLengths, focusURL, focusLine, focusId}: ViewerContent) {
         if (parts.length === 0 || article.children.length === 0) {
             return
         }
@@ -91,7 +96,7 @@ export function createViewer() {
         }
     }
     async function load(urls: string[], focusURL?: string, focusLine?: number, focusId?: string) {
-        const partPromises: Promise<Part[]>[] = []
+        const partPromises: Promise<STDNPart[]>[] = []
         for (const url of await urlsToAbsURLs(urls, location.href)) {
             partPromises.push((async () => {
                 try {
@@ -110,16 +115,25 @@ export function createViewer() {
             })())
         }
         const parts = (await Promise.all(partPromises)).flat()
-        const result = await multiCompile(parts, {
+        const {compiler, documentFragment, partLengths, stdn} = await multiCompile(parts, {
             builtInTagToUnitCompiler: tagToUnitCompiler,
             style
         })
-        document.title = result.compiler.context.title
+        document.title = compiler.context.title
         article.innerHTML = ''
-        article.append(result.documentFragment)
+        article.append(documentFragment)
         nav.innerHTML = ''
-        nav.append(headingTreeToElement(extractHeadingTree(result.compiler.context)))
-        await initParts(parts, result.partLengths, focusURL, focusLine, focusId)
+        nav.append(headingTreeToElement(extractHeadingTree(compiler.context)))
+        await initParts(env.content = {
+            compiler,
+            documentFragment,
+            parts,
+            partLengths,
+            stdn,
+            focusURL,
+            focusLine,
+            focusId
+        })
     }
     async function loadString(string: string, focusLine?: number, focusId?: string) {
         const result = await compile(string, location.href, {
@@ -129,12 +143,22 @@ export function createViewer() {
         if (result === undefined) {
             return
         }
-        document.title = result.compiler.context.title
+        const {compiler, documentFragment, stdn} = result
+        document.title = compiler.context.title
         article.innerHTML = ''
-        article.append(result.documentFragment)
+        article.append(documentFragment)
         nav.innerHTML = ''
-        nav.append(headingTreeToElement(extractHeadingTree(result.compiler.context)))
-        await initParts([{string, dir: location.href}], [article.children.length], undefined, focusLine, focusId)
+        nav.append(headingTreeToElement(extractHeadingTree(compiler.context)))
+        await initParts(env.content = {
+            compiler,
+            documentFragment,
+            parts: [{string, dir: location.href}],
+            partLengths: [stdn.length],
+            stdn,
+            focusURL: undefined,
+            focusLine,
+            focusId
+        })
     }
     async function autoLoad() {
         const params = new URLSearchParams(location.search)
@@ -172,6 +196,7 @@ export function createViewer() {
         nav,
         settings,
         dblClickLineListeners,
+        env,
         initParts,
         load,
         loadString,

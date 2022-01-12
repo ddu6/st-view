@@ -1,6 +1,9 @@
-interface Part {
-    string: string;
-    dir: string;
+import { multiCompile, STDNPart } from '@ddu6/stc';
+export interface ViewerContent extends Awaited<ReturnType<typeof multiCompile>> {
+    parts: STDNPart[];
+    focusURL: string | undefined;
+    focusLine: number | undefined;
+    focusId: string | undefined;
 }
 export declare function createViewer(): {
     element: HTMLDivElement;
@@ -11,9 +14,11 @@ export declare function createViewer(): {
     nav: HTMLElement;
     settings: HTMLDetailsElement;
     dblClickLineListeners: ((line: number, url: string, partialLine: number) => Promise<void>)[];
-    initParts: (parts: Part[], partLengths: number[], focusURL: string | undefined, focusLine: number | undefined, focusId: string | undefined) => Promise<void>;
+    env: {
+        content?: ViewerContent | undefined;
+    };
+    initParts: ({ parts, partLengths, focusURL, focusLine, focusId }: ViewerContent) => Promise<void>;
     load: (urls: string[], focusURL?: string | undefined, focusLine?: number | undefined, focusId?: string | undefined) => Promise<void>;
     loadString: (string: string, focusLine?: number | undefined, focusId?: string | undefined) => Promise<void>;
     autoLoad: () => Promise<void>;
 };
-export {};
