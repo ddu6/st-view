@@ -1,14 +1,5 @@
 @import url(https://cdn.jsdelivr.net/gh/st-org/st-std@0.24.2/main.css);
 
-body>.lr-struct>aside>.content>nav details {
-    padding-left: var(--length-padding);
-}
-
-body>.lr-struct>aside>.content>nav details>summary {
-    list-style-position: outside;
-    list-style-type: circle;
-}
-
-body>.lr-struct>aside>.content>nav details[open]>summary {
-    list-style-type: disc;
+body>.lr-struct>aside>.content>nav>details details {
+    margin-left: var(--length-padding);
 }
