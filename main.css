@@ -1,4 +1,4 @@
-@import url(https://cdn.jsdelivr.net/gh/st-org/st-std@0.25.0/main.css);
+@import url(https://cdn.jsdelivr.net/gh/st-org/st-std@0.25.1/main.css);
 
 body>.lr-struct>aside>.content>nav>details details {
     margin-left: var(--length-padding);
