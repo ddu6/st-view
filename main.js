@@ -1,4 +1,4 @@
-import {init} from 'https://cdn.jsdelivr.net/gh/st-org/stui@0.13.0/mod.js'
+import {init} from 'https://cdn.jsdelivr.net/gh/st-org/stui@0.15.1/mod.js'
 import {createViewer} from './mod.js'
 init()
 const viewer = window.viewer = await createViewer()
