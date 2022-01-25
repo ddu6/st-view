@@ -14,7 +14,7 @@
   "devDependencies": {
     "@ddu6/stc": "^0.22.0",
     "@ddu6/stui": "^0.15.5",
-    "st-std": "^0.28.2",
+    "st-std": "^0.28.3",
     "stdn": "^0.4.1",
     "typescript": "^4.5.4",
     "webpack": "^5.66.0",
