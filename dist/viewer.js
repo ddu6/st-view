@@ -1,5 +1,64 @@
 import { getMod } from './import';
 import { extractHeadingTree, headingTreeToElement } from './heading-tree';
+export function parsePositionStr(string) {
+    return string.trim().split(/\s+/).map(value => {
+        if (/^\d+$/.test(value)) {
+            return Number(value);
+        }
+        if (value.startsWith('"')) {
+            return value.slice(1, -1);
+        }
+        return value;
+    });
+}
+export function positionToUnitOrLines(offset, position, stdn) {
+    const out = [];
+    if (position.length === 0 || stdn.length === 0) {
+        return out;
+    }
+    const line = position[0];
+    if (typeof line !== 'number') {
+        return out;
+    }
+    let unitOrLine = stdn[Math.min(line + offset, stdn.length - 1)];
+    out.push(unitOrLine);
+    for (let i = 1; i < position.length; i++) {
+        const step = position[i];
+        if (typeof step === 'number') {
+            if (Array.isArray(unitOrLine)) {
+                const unit = unitOrLine[step];
+                if (typeof unit !== 'object') {
+                    break;
+                }
+                out.push(unitOrLine = unit);
+                continue;
+            }
+            const line = unitOrLine.children[step];
+            if (line === undefined) {
+                break;
+            }
+            out.push(unitOrLine = line);
+            continue;
+        }
+        if (Array.isArray(unitOrLine)) {
+            break;
+        }
+        const stdn = unitOrLine.options[step];
+        if (!Array.isArray(stdn)) {
+            break;
+        }
+        const nextStep = position[++i];
+        if (typeof nextStep !== 'number') {
+            break;
+        }
+        const line = stdn[nextStep];
+        if (line === undefined) {
+            break;
+        }
+        out.push(unitOrLine = line);
+    }
+    return out;
+}
 export async function createViewer() {
     const { element, main, sideContent, article, settings } = ((await getMod('stui')).createASStruct)();
     const style = document.createElement('style');
@@ -38,9 +97,9 @@ export async function createViewer() {
             return;
         }
     });
-    async function focus(focusURL, focusLine, focusId) {
+    async function focus(focusURL, focusPositionStr, focusId) {
         const { compiler } = env;
-        if (compiler === undefined || compiler.context.stdn.length === 0) {
+        if (compiler === undefined) {
             return;
         }
         let focusPart;
@@ -59,25 +118,24 @@ export async function createViewer() {
             }
         }
         let focusEle = article;
-        if (focusLine !== undefined) {
+        if (focusPositionStr !== undefined) {
+            let offset = 0;
             if (focusPart !== undefined) {
-                focusLine += (compiler.context.partToOffset.get(focusPart) ?? 0);
+                offset = compiler.context.partToOffset.get(focusPart) ?? 0;
             }
-            if (focusLine < 0) {
-                focusLine = 0;
-            }
-            else if (focusLine >= article.children.length) {
-                focusLine = article.children.length - 1;
-            }
-            const div = article.children[focusLine];
-            if (div !== undefined) {
-                focusEle = div;
+            const unitOrLines = positionToUnitOrLines(offset, parsePositionStr(focusPositionStr), compiler.context.stdn);
+            for (let i = unitOrLines.length - 1; i >= 0; i--) {
+                const elements = compiler.unitOrLineToElements.get(unitOrLines[i]);
+                if (elements !== undefined && elements.length > 0) {
+                    focusEle = elements[elements.length - 1];
+                    break;
+                }
             }
         }
         if (focusId !== undefined) {
-            const anchor = focusEle.querySelector(`[id=${JSON.stringify(focusId)}]`);
-            if (anchor !== null) {
-                focusEle = anchor;
+            const element = focusEle.querySelector(`[id=${JSON.stringify(focusId)}]`);
+            if (element !== null) {
+                focusEle = element;
             }
         }
         if (focusEle !== article) {
@@ -128,14 +186,7 @@ export async function createViewer() {
     async function autoLoad() {
         const params = new URLSearchParams(location.search);
         const focusURL = params.get('focus-url') ?? document.documentElement.dataset.focusUrl;
-        const focusLineStr = params.get('focus-line') ?? document.documentElement.dataset.focusLine;
-        let focusLine;
-        if (focusLineStr !== undefined) {
-            focusLine = Number(focusLineStr);
-            if (!isFinite(focusLine) || focusLine % 1 !== 0) {
-                focusLine = undefined;
-            }
-        }
+        const focusPositionStr = params.get('focus-position') ?? document.documentElement.dataset.focusPosition;
         let focusId;
         if (location.hash.length > 1) {
             focusId = decodeURIComponent(location.hash.slice(1));
@@ -150,7 +201,7 @@ export async function createViewer() {
         else if (src !== undefined) {
             await load([src]);
         }
-        await focus(focusURL, focusLine, focusId);
+        await focus(focusURL, focusPositionStr, focusId);
     }
     return {
         element,
