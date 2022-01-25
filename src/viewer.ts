@@ -53,8 +53,7 @@ export async function createViewer() {
             }
             const {origin, pathname} = new URL(focusURL)
             const {parts} = compiler.context
-            for (let i = 0; i < parts.length; i++) {
-                const part = parts[i]
+            for (const part of parts) {
                 const url = new URL(part.url)
                 if (url.origin === origin && url.pathname === pathname) {
                     focusPart = part
@@ -65,7 +64,7 @@ export async function createViewer() {
         let focusEle: Element = article
         if (focusLine !== undefined) {
             if (focusPart !== undefined) {
-                focusLine + (compiler.context.partToOffset.get(focusPart) ?? 0)
+                focusLine += (compiler.context.partToOffset.get(focusPart) ?? 0)
             }
             if (focusLine < 0) {
                 focusLine = 0
