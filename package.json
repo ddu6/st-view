@@ -12,9 +12,9 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "@ddu6/stc": "^0.21.1",
+    "@ddu6/stc": "^0.22.0",
     "@ddu6/stui": "^0.15.5",
-    "st-std": "^0.28.1",
+    "st-std": "^0.28.2",
     "stdn": "^0.3.3",
     "typescript": "^4.5.4",
     "webpack": "^5.66.0",
