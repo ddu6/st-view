@@ -7,43 +7,62 @@ export async function createViewer() {
     sideContent.prepend(nav);
     const dblClickLineListeners = [];
     const env = {};
-    async function initParts({ compiler, parts, partLengths, focusURL, focusLine, focusId }) {
-        if (parts.length === 0 || article.children.length === 0) {
+    article.addEventListener('dblclick', async (e) => {
+        const { compiler } = env;
+        if (compiler === undefined) {
             return;
         }
-        let line = 0;
-        for (let i = 0; i < partLengths.length; i++) {
-            const partLength = partLengths[i];
-            const { dir } = parts[i];
-            for (let partialLine = 0; partialLine < partLength; partialLine++) {
-                const lineEle = article.children[line];
-                const staticLine = line;
-                lineEle.addEventListener('dblclick', async () => {
-                    for (const listener of dblClickLineListeners) {
-                        await listener(staticLine, dir, partialLine);
-                    }
-                });
-                line++;
+        for (const target of e.composedPath()) {
+            if (!(target instanceof HTMLElement) && !(target instanceof SVGElement)) {
+                continue;
             }
+            const unitOrLine = compiler.elementToUnitOrLine.get(target);
+            if (unitOrLine === undefined) {
+                continue;
+            }
+            const part = compiler.context.unitOrLineToPart.get(unitOrLine);
+            if (part === undefined) {
+                continue;
+            }
+            const offset = compiler.context.partToOffset.get(part);
+            if (offset === undefined) {
+                continue;
+            }
+            const position = compiler.context.unitOrLineToPosition.get(unitOrLine);
+            if (position === undefined) {
+                continue;
+            }
+            for (const listener of dblClickLineListeners) {
+                await listener(part, offset, position);
+            }
+            return;
         }
-        let focusPart = 0;
+    });
+    async function focus(focusURL, focusLine, focusId) {
+        const { compiler } = env;
+        if (compiler === undefined || compiler.context.stdn.length === 0) {
+            return;
+        }
+        let focusPart;
         if (focusURL !== undefined) {
             if (compiler.urls.isRelURL(focusURL)) {
                 focusURL = new URL(focusURL, location.href).href;
             }
             const { origin, pathname } = new URL(focusURL);
+            const { parts } = compiler.context;
             for (let i = 0; i < parts.length; i++) {
-                const url = new URL(parts[i].dir);
+                const part = parts[i];
+                const url = new URL(part.url);
                 if (url.origin === origin && url.pathname === pathname) {
-                    focusPart = i;
+                    focusPart = part;
                     break;
                 }
             }
         }
         let focusEle = article;
         if (focusLine !== undefined) {
-            for (let i = 0; i < focusPart; i++) {
-                focusLine += partLengths[i];
+            if (focusPart !== undefined) {
+                focusLine + (compiler.context.partToOffset.get(focusPart) ?? 0);
             }
             if (focusLine < 0) {
                 focusLine = 0;
@@ -67,10 +86,10 @@ export async function createViewer() {
             const l = () => {
                 operated = true;
             };
-            addEventListener('wheel', l, { once: true });
-            addEventListener('touchmove', l, { once: true });
-            addEventListener('keydown', l, { once: true });
             addEventListener('click', l, { once: true });
+            addEventListener('keydown', l, { once: true });
+            addEventListener('touchmove', l, { once: true });
+            addEventListener('wheel', l, { once: true });
             for (let i = 0; i < 100; i++) {
                 if (operated) {
                     break;
@@ -82,73 +101,30 @@ export async function createViewer() {
             }
         }
     }
-    async function load(urls, focusURL, focusLine, focusId) {
-        const { multiCompile, urlsToAbsURLs } = await getMod('stc');
-        const partPromises = [];
-        for (const url of await urlsToAbsURLs(urls, location.href)) {
-            partPromises.push((async () => {
-                try {
-                    const res = await fetch(url);
-                    if (!res.ok) {
-                        return [];
-                    }
-                    return [{
-                            string: await res.text(),
-                            dir: url
-                        }];
-                }
-                catch (err) {
-                    console.log(err);
-                    return [];
-                }
-            })());
-        }
-        const parts = (await Promise.all(partPromises)).flat();
-        const { compiler, documentFragment, partLengths, stdn } = await multiCompile(parts, {
-            builtInTagToUnitCompiler: await getMod('ucs'),
-            style
-        });
+    function loadCompileResult({ compiler, documentFragment }) {
         document.title = compiler.context.title;
         article.innerHTML = '';
         article.append(documentFragment);
         nav.innerHTML = '';
         nav.append(headingTreeToElement(extractHeadingTree(compiler.context, compiler.base.unitToInlinePlainString)));
-        await initParts(env.content = {
-            compiler,
-            documentFragment,
-            parts,
-            partLengths,
-            stdn,
-            focusURL,
-            focusLine,
-            focusId
-        });
+        env.compiler = compiler;
     }
-    async function loadString(string, focusLine, focusId) {
-        const { compile } = await getMod('stc');
-        const result = await compile(string, location.href, {
+    async function load(urls) {
+        const { compileURLs } = await getMod('stc');
+        loadCompileResult(await compileURLs(urls, {
             builtInTagToUnitCompiler: await getMod('ucs'),
             style
-        });
-        if (result === undefined) {
-            return;
-        }
-        const { compiler, documentFragment, stdn } = result;
-        document.title = compiler.context.title;
-        article.innerHTML = '';
-        article.append(documentFragment);
-        nav.innerHTML = '';
-        nav.append(headingTreeToElement(extractHeadingTree(compiler.context, compiler.base.unitToInlinePlainString)));
-        await initParts(env.content = {
-            compiler,
-            documentFragment,
-            parts: [{ string, dir: location.href }],
-            partLengths: [stdn.length],
-            stdn,
-            focusURL: undefined,
-            focusLine,
-            focusId
-        });
+        }));
+    }
+    async function loadString(string) {
+        const { compile } = await getMod('stc');
+        loadCompileResult(await compile([{
+                value: string,
+                url: location.href
+            }], {
+            builtInTagToUnitCompiler: await getMod('ucs'),
+            style
+        }));
     }
     async function autoLoad() {
         const params = new URLSearchParams(location.search);
@@ -170,12 +146,12 @@ export async function createViewer() {
         const string = params.get('string') ?? document.documentElement.dataset.string;
         const src = params.get('src') ?? document.documentElement.dataset.src;
         if (string !== undefined) {
-            await loadString(string, focusLine, focusId);
-            return;
+            await loadString(string);
         }
-        if (src !== undefined) {
-            await load([src], focusURL, focusLine, focusId);
+        else if (src !== undefined) {
+            await load([src]);
         }
+        await focus(focusURL, focusLine, focusId);
     }
     return {
         element,
@@ -187,7 +163,7 @@ export async function createViewer() {
         settings,
         dblClickLineListeners,
         env,
-        initParts,
+        focus,
         load,
         loadString,
         autoLoad

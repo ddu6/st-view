@@ -1,58 +1,71 @@
-import type {multiCompile, STDNPart} from '@ddu6/stc'
+import type {compile, Compiler, STDNPart, STDNPosition} from '@ddu6/stc'
 import {getMod} from './import'
 import {extractHeadingTree, headingTreeToElement} from './heading-tree'
-export interface ViewerContent extends Awaited<ReturnType<typeof multiCompile>> {
-    parts: STDNPart[]
-    focusURL: string | undefined
-    focusLine: number | undefined
-    focusId: string | undefined
-}
 export async function createViewer() {
     const {element, main, sideContent, article, settings} = ((await getMod('stui')).createASStruct)()
     const style = document.createElement('style')
     const nav = document.createElement('nav')
     sideContent.prepend(nav)
-    const dblClickLineListeners: ((line: number, url: string, partialLine: number) => Promise<void>)[] = []
+    const dblClickLineListeners: ((part: STDNPart, offset: number, position: STDNPosition) => Promise<void>)[] = []
     const env: {
-        content?: ViewerContent
+        compiler?: Compiler
     } = {}
-    async function initParts({compiler, parts, partLengths, focusURL, focusLine, focusId}: ViewerContent) {
-        if (parts.length === 0 || article.children.length === 0) {
+    article.addEventListener('dblclick', async e => {
+        const {compiler} = env
+        if (compiler === undefined) {
             return
         }
-        let line = 0
-        for (let i = 0; i < partLengths.length; i++) {
-            const partLength = partLengths[i]
-            const {dir} = parts[i]
-            for (let partialLine = 0; partialLine < partLength; partialLine++) {
-                const lineEle = article.children[line]
-                const staticLine = line
-                lineEle.addEventListener('dblclick', async () => {
-                    for (const listener of dblClickLineListeners) {
-                        await listener(staticLine, dir, partialLine)
-                    }
-                })
-                line++
+        for (const target of e.composedPath()) {
+            if (!(target instanceof HTMLElement) && !(target instanceof SVGElement)) {
+                continue
             }
+            const unitOrLine = compiler.elementToUnitOrLine.get(target)
+            if (unitOrLine === undefined) {
+                continue
+            }
+            const part = compiler.context.unitOrLineToPart.get(unitOrLine)
+            if (part === undefined) {
+                continue
+            }
+            const offset = compiler.context.partToOffset.get(part)
+            if (offset === undefined) {
+                continue
+            }
+            const position = compiler.context.unitOrLineToPosition.get(unitOrLine)
+            if (position === undefined) {
+                continue
+            }
+            for (const listener of dblClickLineListeners) {
+                await listener(part, offset, position)
+            }
+            return
         }
-        let focusPart = 0
+    })
+    async function focus(focusURL?: string, focusLine?: number, focusId?: string) {
+        const {compiler} = env
+        if (compiler === undefined || compiler.context.stdn.length === 0) {
+            return
+        }
+        let focusPart: STDNPart | undefined
         if (focusURL !== undefined) {
             if (compiler.urls.isRelURL(focusURL)) {
                 focusURL = new URL(focusURL, location.href).href
             }
             const {origin, pathname} = new URL(focusURL)
+            const {parts} = compiler.context
             for (let i = 0; i < parts.length; i++) {
-                const url = new URL(parts[i].dir)
+                const part = parts[i]
+                const url = new URL(part.url)
                 if (url.origin === origin && url.pathname === pathname) {
-                    focusPart = i
+                    focusPart = part
                     break
                 }
             }
         }
         let focusEle: Element = article
         if (focusLine !== undefined) {
-            for (let i = 0; i < focusPart; i++) {
-                focusLine += partLengths[i]
+            if (focusPart !== undefined) {
+                focusLine + (compiler.context.partToOffset.get(focusPart) ?? 0)
             }
             if (focusLine < 0) {
                 focusLine = 0
@@ -75,10 +88,10 @@ export async function createViewer() {
             const l = () => {
                 operated = true
             }
-            addEventListener('wheel', l, {once: true})
-            addEventListener('touchmove', l, {once: true})
-            addEventListener('keydown', l, {once: true})
             addEventListener('click', l, {once: true})
+            addEventListener('keydown', l, {once: true})
+            addEventListener('touchmove', l, {once: true})
+            addEventListener('wheel', l, {once: true})
             for (let i = 0; i < 100; i++) {
                 if (operated) {
                     break
@@ -90,72 +103,30 @@ export async function createViewer() {
             }
         }
     }
-    async function load(urls: string[], focusURL?: string, focusLine?: number, focusId?: string) {
-        const {multiCompile, urlsToAbsURLs} = await getMod('stc')
-        const partPromises: Promise<STDNPart[]>[] = []
-        for (const url of await urlsToAbsURLs(urls, location.href)) {
-            partPromises.push((async () => {
-                try {
-                    const res = await fetch(url)
-                    if (!res.ok) {
-                        return []
-                    }
-                    return [{
-                        string: await res.text(),
-                        dir: url
-                    }]
-                } catch (err) {
-                    console.log(err)
-                    return []
-                }
-            })())
-        }
-        const parts = (await Promise.all(partPromises)).flat()
-        const {compiler, documentFragment, partLengths, stdn} = await multiCompile(parts, {
-            builtInTagToUnitCompiler: await getMod('ucs'),
-            style
-        })
+    function loadCompileResult({compiler, documentFragment}: Awaited<ReturnType<typeof compile>>) {
         document.title = compiler.context.title
         article.innerHTML = ''
         article.append(documentFragment)
         nav.innerHTML = ''
         nav.append(headingTreeToElement(extractHeadingTree(compiler.context, compiler.base.unitToInlinePlainString)))
-        await initParts(env.content = {
-            compiler,
-            documentFragment,
-            parts,
-            partLengths,
-            stdn,
-            focusURL,
-            focusLine,
-            focusId
-        })
+        env.compiler = compiler
     }
-    async function loadString(string: string, focusLine?: number, focusId?: string) {
-        const {compile} = await getMod('stc')
-        const result = await compile(string, location.href, {
+    async function load(urls: string[]) {
+        const {compileURLs} = await getMod('stc')
+        loadCompileResult(await compileURLs(urls, {
             builtInTagToUnitCompiler: await getMod('ucs'),
             style
-        })
-        if (result === undefined) {
-            return
-        }
-        const {compiler, documentFragment, stdn} = result
-        document.title = compiler.context.title
-        article.innerHTML = ''
-        article.append(documentFragment)
-        nav.innerHTML = ''
-        nav.append(headingTreeToElement(extractHeadingTree(compiler.context, compiler.base.unitToInlinePlainString)))
-        await initParts(env.content = {
-            compiler,
-            documentFragment,
-            parts: [{string, dir: location.href}],
-            partLengths: [stdn.length],
-            stdn,
-            focusURL: undefined,
-            focusLine,
-            focusId
-        })
+        }))
+    }
+    async function loadString(string: string) {
+        const {compile} = await getMod('stc')
+        loadCompileResult(await compile([{
+            value: string,
+            url: location.href
+        }], {
+            builtInTagToUnitCompiler: await getMod('ucs'),
+            style
+        }))
     }
     async function autoLoad() {
         const params = new URLSearchParams(location.search)
@@ -177,12 +148,11 @@ export async function createViewer() {
         const string = params.get('string') ?? document.documentElement.dataset.string
         const src = params.get('src') ?? document.documentElement.dataset.src
         if (string !== undefined) {
-            await loadString(string, focusLine, focusId)
-            return
+            await loadString(string)
+        } else if (src !== undefined) {
+            await load([src])
         }
-        if (src !== undefined) {
-            await load([src], focusURL, focusLine, focusId)
-        }
+        await focus(focusURL, focusLine, focusId)
     }
     return {
         element,
@@ -194,7 +164,7 @@ export async function createViewer() {
         settings,
         dblClickLineListeners,
         env,
-        initParts,
+        focus,
         load,
         loadString,
         autoLoad

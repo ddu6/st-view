@@ -1,10 +1,4 @@
-import type { multiCompile, STDNPart } from '@ddu6/stc';
-export interface ViewerContent extends Awaited<ReturnType<typeof multiCompile>> {
-    parts: STDNPart[];
-    focusURL: string | undefined;
-    focusLine: number | undefined;
-    focusId: string | undefined;
-}
+import type { Compiler, STDNPart, STDNPosition } from '@ddu6/stc';
 export declare function createViewer(): Promise<{
     element: HTMLDivElement;
     style: HTMLStyleElement;
@@ -13,12 +7,12 @@ export declare function createViewer(): Promise<{
     article: HTMLElement;
     nav: HTMLElement;
     settings: HTMLDetailsElement;
-    dblClickLineListeners: ((line: number, url: string, partialLine: number) => Promise<void>)[];
+    dblClickLineListeners: ((part: STDNPart, offset: number, position: STDNPosition) => Promise<void>)[];
     env: {
-        content?: ViewerContent | undefined;
+        compiler?: Compiler | undefined;
     };
-    initParts: ({ compiler, parts, partLengths, focusURL, focusLine, focusId }: ViewerContent) => Promise<void>;
-    load: (urls: string[], focusURL?: string | undefined, focusLine?: number | undefined, focusId?: string | undefined) => Promise<void>;
-    loadString: (string: string, focusLine?: number | undefined, focusId?: string | undefined) => Promise<void>;
+    focus: (focusURL?: string | undefined, focusLine?: number | undefined, focusId?: string | undefined) => Promise<void>;
+    load: (urls: string[]) => Promise<void>;
+    loadString: (string: string) => Promise<void>;
     autoLoad: () => Promise<void>;
 }>;

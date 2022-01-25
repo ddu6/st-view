@@ -12,18 +12,18 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "@ddu6/stc": "^0.19.3",
-    "@ddu6/stui": "^0.15.4",
-    "st-std": "^0.26.1",
+    "@ddu6/stc": "^0.21.1",
+    "@ddu6/stui": "^0.15.5",
+    "st-std": "^0.28.1",
     "typescript": "^4.5.4",
     "webpack": "^5.66.0",
     "webpack-cli": "^4.9.1"
   },
+  "dependencies": {
+    "@ddu6/importer": "^0.0.3"
+  },
   "engines": {
     "node": ">=14.0.0",
     "npm": ">=8.0.0"
-  },
-  "dependencies": {
-    "@ddu6/importer": "^0.0.2"
   }
 }

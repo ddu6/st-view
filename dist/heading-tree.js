@@ -7,7 +7,7 @@ export function extractHeadingTree(context, unitToInlinePlainString0) {
                 level: indexInfo.index.length,
                 data: {
                     string: unitToInlinePlainString0(indexInfo.unit),
-                    href: '#' + encodeURIComponent(indexInfo.id)
+                    href: `#${encodeURIComponent(indexInfo.id)}`
                 }
             });
         }
