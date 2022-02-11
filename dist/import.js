@@ -1,6 +1,6 @@
 import { createImporter } from '@ddu6/importer';
 export const { getMod } = createImporter({
-    stc: 'https://cdn.jsdelivr.net/gh/st-org/stc@0.22.0/mod.js',
-    stui: 'https://cdn.jsdelivr.net/gh/st-org/stui@0.15.5/mod.js',
-    ucs: 'https://cdn.jsdelivr.net/gh/st-org/st-std@0.28.3/ucs.js'
+    stc: 'https://cdn.jsdelivr.net/gh/st-org/stc@0.23.0/mod.js',
+    stui: 'https://cdn.jsdelivr.net/gh/st-org/stui@0.15.6/mod.js',
+    ucs: 'https://cdn.jsdelivr.net/gh/st-org/st-std@0.28.4/ucs.js'
 });
