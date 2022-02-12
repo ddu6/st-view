@@ -167,13 +167,16 @@ export async function createViewer() {
         env.compiler = compiler;
     }
     async function load(urls) {
+        element.classList.add('loading');
         const { compileURLs } = await getMod('stc');
         loadCompileResult(await compileURLs(urls, {
             builtInTagToUnitCompiler: await getMod('ucs'),
             style
         }));
+        element.classList.remove('loading');
     }
     async function loadString(string) {
+        element.classList.add('loading');
         const { compile } = await getMod('stc');
         loadCompileResult(await compile([{
                 value: string,
@@ -182,6 +185,7 @@ export async function createViewer() {
             builtInTagToUnitCompiler: await getMod('ucs'),
             style
         }));
+        element.classList.remove('loading');
     }
     async function autoLoad() {
         const params = new URLSearchParams(location.search);

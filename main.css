@@ -1,4 +1,27 @@
-@import url(https://cdn.jsdelivr.net/gh/st-org/st-std@0.29.1/main.css);
+@import url(https://cdn.jsdelivr.net/gh/st-org/st-std@0.29.2/main.css);
+
+@keyframes lr-struct-loading {
+    50% {
+        opacity: .5;
+    }
+}
+
+body>.lr-struct.loading::after {
+    align-items: center;
+    animation-duration: 1s;
+    animation-iteration-count: infinite;
+    animation-name: lr-struct-loading;
+    background: var(--color-background);
+    bottom: 0;
+    content: "Loading...";
+    display: grid;
+    font-size: var(--length-font-title);
+    left: 0;
+    position: fixed;
+    right: 0;
+    text-align: center;
+    top: 0;
+}
 
 body>.lr-struct>aside>.content>nav>details details {
     margin-left: var(--length-padding);
