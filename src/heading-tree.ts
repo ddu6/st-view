@@ -6,16 +6,14 @@ export interface HeadingTreeItem {
 }
 export function extractHeadingTree(context: Context, unitToInlinePlainString0: typeof unitToInlinePlainString) {
     const array: TreeItems<HeadingTreeItem> = []
-    for (const indexInfo of context.indexInfoArray) {
-        if (indexInfo.orbit === 'heading') {
-            array.push({
-                level: indexInfo.index.length,
-                data: {
-                    string: unitToInlinePlainString0(indexInfo.unit),
-                    href: `#${encodeURIComponent(indexInfo.id)}`
-                }
-            })
-        }
+    for (const indexInfo of context.headings) {
+        array.push({
+            level: indexInfo.index.length,
+            data: {
+                string: unitToInlinePlainString0(indexInfo.unit),
+                href: `#${encodeURIComponent(indexInfo.id)}`
+            }
+        })
     }
     return new Tree({
         string: context.title,

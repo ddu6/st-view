@@ -1,7 +1,5 @@
-import type { STDN, STDNLine, STDNUnit } from 'stdn';
-import type { Compiler, STDNPart, STDNPosition } from '@ddu6/stc';
-export declare function parsePositionStr(string: string): (string | number)[];
-export declare function positionToUnitOrLines(offset: number, position: STDNPosition, stdn: STDN): (STDNUnit | STDNLine)[];
+import type { STDNPosition } from 'stdn';
+import type { Compiler, STDNPart } from '@ddu6/stc';
 export declare function createViewer(): Promise<{
     element: HTMLDivElement;
     style: HTMLStyleElement;
