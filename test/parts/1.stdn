@@ -1,7 +1,7 @@
 ['The first successful proof of '{ref-id flt, ref []}' was released in 1994 by Andrew Wiles.']
 []
 {id flt, mark {'FLT'}, desc Fermat, theorem [
-    ['Let '{'n'}' be an integer greater than '{'2'}', then there are no positive integers '{'a,b,c'}' satisfying']
+    ['Let '{'n'}' be an integer greater than '{'2,'}' then there are no positive integers '{'a,b,c'}' satisfying']
     {equation [{display, 'a^n+b^n=c^n.'}]}
 ]}
 []
