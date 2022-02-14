@@ -2,33 +2,30 @@ export interface TreeItem<Data> {
     level: number
     data: Data
 }
-export type TreeItems<Data> = TreeItem<Data>[]
-export class Tree<Data>{
+export interface Tree<Data> {
     data: Data | undefined
     children: Tree<Data>[]
-    constructor(data?: Data, array: TreeItems<Data> = []) {
-        this.data = data
-        const tree: Tree<Data> = {data: data, children: []}
-        for (const {level, data} of array) {
-            let pointer = tree
-            for (let i = 1; i < level; i++) {
-                const children = pointer.children
-                if (children.length > 0) {
-                    pointer = children[children.length - 1]
-                } else {
-                    pointer = {
-                        data: undefined,
-                        children: []
-                    }
-                    children.push(pointer)
-                }
-            }
+}
+export function createTree<Data>(data?: Data, array: TreeItem<Data>[] = []) {
+    const tree: Tree<Data> = {data, children: []}
+    for (const {level, data} of array) {
+        let pointer = tree
+        for (let i = 1; i < level; i++) {
             const children = pointer.children
-            children.push({
-                data: data,
+            if (children.length > 0) {
+                pointer = children[children.length - 1]
+                continue
+            }
+            pointer = {
+                data: undefined,
                 children: []
-            })
+            }
+            children.push(pointer)
         }
-        this.children = tree.children
+        pointer.children.push({
+            data: data,
+            children: []
+        })
     }
+    return tree
 }

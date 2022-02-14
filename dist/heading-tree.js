@@ -1,4 +1,4 @@
-import { Tree } from './tree';
+import { createTree } from './tree';
 export function extractHeadingTree(context, unitToInlinePlainString0) {
     const array = [];
     for (const indexInfo of context.headings) {
@@ -10,7 +10,7 @@ export function extractHeadingTree(context, unitToInlinePlainString0) {
             }
         });
     }
-    return new Tree({
+    return createTree({
         string: context.title,
         href: '#'
     }, array);
