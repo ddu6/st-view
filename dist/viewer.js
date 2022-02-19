@@ -1,7 +1,7 @@
 import { getMod } from './import';
 import { extractHeadingTree, headingTreeToElement } from './heading-tree';
 export async function createViewer() {
-    const { element, main, sideContent, article, settings } = ((await getMod('stui')).createASStruct)();
+    const { element, main, sideContent, article, settings } = (await getMod('stui')).createASStruct();
     const style = document.createElement('style');
     const nav = document.createElement('nav');
     sideContent.prepend(nav);
