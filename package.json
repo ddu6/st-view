@@ -13,8 +13,8 @@
   "license": "MIT",
   "devDependencies": {
     "@ddu6/stc": "^0.28.0",
-    "@ddu6/stui": "^0.15.9",
-    "st-std": "^0.31.1",
+    "@ddu6/stui": "^0.15.10",
+    "st-std": "^0.31.2",
     "stdn": "^0.7.0",
     "typescript": "^4.5.4",
     "webpack": "^5.66.0",
