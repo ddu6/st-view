@@ -8,6 +8,6 @@ export const {getMod} = createImporter<{
     ucs: typeof tagToUnitCompiler
 }>({
     stc: 'https://cdn.jsdelivr.net/gh/st-org/stc@0.28.0/mod.js',
-    stui: 'https://cdn.jsdelivr.net/gh/st-org/stui@0.15.10/mod.js',
-    ucs: 'https://cdn.jsdelivr.net/gh/st-org/st-std@0.31.2/ucs.js'
+    stui: 'https://cdn.jsdelivr.net/gh/st-org/stui@0.15.11/mod.js',
+    ucs: 'https://cdn.jsdelivr.net/gh/st-org/st-std@0.31.3/ucs.js'
 })
