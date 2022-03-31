@@ -129,17 +129,30 @@ export async function createViewer() {
         element.classList.remove('loading');
     }
     async function autoLoad() {
+        const { dataset } = document.documentElement;
+        const { srcPolicy } = dataset;
+        let { src, string } = dataset;
         const params = new URLSearchParams(location.search);
-        const focusURL = params.get('focus-url') ?? document.documentElement.dataset.focusUrl;
-        const focusPositionStr = params.get('focus-position') ?? document.documentElement.dataset.focusPosition;
+        const unsafeSrc = params.get('src');
+        if (unsafeSrc !== null
+            && (srcPolicy === 'loose'
+                || new URL(unsafeSrc, location.href).href
+                    .startsWith(new URL('.', new URL(src ?? '', location.href)).href))) {
+            src = unsafeSrc;
+        }
+        const unsafeString = params.get('string');
+        if (unsafeString !== null
+            && srcPolicy === 'loose') {
+            string = unsafeString;
+        }
+        const focusURL = params.get('focus-url') ?? dataset.focusUrl;
+        const focusPositionStr = params.get('focus-position') ?? dataset.focusPosition;
         let focusId;
         if (location.hash.length > 1) {
             focusId = decodeURIComponent(location.hash.slice(1));
         }
         else
-            (focusId = document.documentElement.dataset.focusId);
-        const string = params.get('string') ?? document.documentElement.dataset.string;
-        const src = params.get('src') ?? document.documentElement.dataset.src;
+            (focusId = dataset.focusId);
         if (string !== undefined) {
             await loadString(string);
         }
