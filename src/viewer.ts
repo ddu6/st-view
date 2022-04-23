@@ -104,7 +104,9 @@ export async function createViewer() {
         }
     }
     function loadCompileResult({compiler, documentFragment}: Awaited<ReturnType<typeof compile>>) {
-        document.title = compiler.context.title
+        if (compiler.context.title.length > 0) {
+            document.title = compiler.context.title
+        }
         article.innerHTML = ''
         article.append(documentFragment)
         nav.innerHTML = ''
