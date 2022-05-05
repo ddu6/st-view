@@ -147,7 +147,7 @@ export async function createViewer() {
                 srcPolicy === 'loose'
                 || fullSrc.startsWith(dir)
             ) {
-                src = unsafeSrc
+                src = fullSrc
             }
         }
         const unsafeString = params.get('string')

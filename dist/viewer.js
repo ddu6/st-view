@@ -141,7 +141,7 @@ export async function createViewer() {
             const fullSrc = new URL(unsafeSrc, dir).href;
             if (srcPolicy === 'loose'
                 || fullSrc.startsWith(dir)) {
-                src = unsafeSrc;
+                src = fullSrc;
             }
         }
         const unsafeString = params.get('string');
