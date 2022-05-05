@@ -42,7 +42,7 @@ export async function createViewer() {
             return
         }
     })
-    async function focus(focusURL?: string, focusPositionStr?: string, focusId?: string) {
+    async function focus(dir: string, focusURL?: string, focusPositionStr?: string, focusId?: string) {
         const {compiler} = env
         if (compiler === undefined) {
             return
@@ -50,7 +50,7 @@ export async function createViewer() {
         let focusPart: STDNPart | undefined
         if (focusURL !== undefined) {
             if (compiler.urls.isRelURL(focusURL)) {
-                focusURL = new URL(focusURL, location.href).href
+                focusURL = new URL(focusURL, dir).href
             }
             const {origin, pathname} = new URL(focusURL)
             const {parts} = compiler.context
@@ -122,12 +122,12 @@ export async function createViewer() {
         }))
         element.classList.remove('loading')
     }
-    async function loadString(string: string) {
+    async function loadString(string: string, url: string) {
         element.classList.add('loading')
         const {compile} = await getMod('stc')
         loadCompileResult(await compile([{
             value: string,
-            url: location.href
+            url
         }], {
             builtInTagToUnitCompiler: await getMod('ucs'),
             style
@@ -138,17 +138,17 @@ export async function createViewer() {
         const {dataset} = document.documentElement
         const {srcPolicy} = dataset
         let {src, string} = dataset
+        const dir = new URL('.', new URL(src ?? '', location.href)).href
         const params = new URLSearchParams(location.search)
         const unsafeSrc = params.get('src')
-        if (
-            unsafeSrc !== null
-            && (
+        if (unsafeSrc !== null) {
+            const fullSrc = new URL(unsafeSrc, dir).href
+            if (
                 srcPolicy === 'loose'
-                || new URL(unsafeSrc, location.href).href
-                    .startsWith(new URL('.', new URL(src ?? '', location.href)).href)
-            )
-        ) {
-            src = unsafeSrc
+                || fullSrc.startsWith(dir)
+            ) {
+                src = unsafeSrc
+            }
         }
         const unsafeString = params.get('string')
         if (
@@ -166,11 +166,11 @@ export async function createViewer() {
             focusId = dataset.focusId
         )
         if (string !== undefined) {
-            await loadString(string)
+            await loadString(string, dir)
         } else if (src !== undefined) {
             await load([src])
         }
-        await focus(focusURL, focusPositionStr, focusId)
+        await focus(dir, focusURL, focusPositionStr, focusId)
     }
     return {
         element,
