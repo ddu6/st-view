@@ -1,1 +1,1 @@
-git diff main -- ':!dist' ':!mod.js' ':!ucs.js'
+git diff main -- ':!dist' ':!mod.js'
