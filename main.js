@@ -1,4 +1,7 @@
+/*
 import {init} from 'https://cdn.jsdelivr.net/gh/st-org/stui@0.15.12/mod.js'
+*/
+import {init} from '../stui@0.15.12/mod.js'
 import {createViewer} from './mod.js'
 init()
 const style = document.createElement('style')
