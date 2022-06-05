@@ -12,7 +12,7 @@ export declare function createViewer(): Promise<{
     env: {
         compiler?: Compiler | undefined;
     };
-    focus: (dir: string, focusURL?: string | undefined, focusPositionStr?: string | undefined, focusId?: string | undefined) => Promise<void>;
+    focus: (dir: string, focusURL?: string, focusPositionStr?: string, focusId?: string) => Promise<void>;
     load: (urls: string[]) => Promise<void>;
     loadString: (string: string, url: string) => Promise<void>;
     autoLoad: () => Promise<void>;

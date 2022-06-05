@@ -13,12 +13,12 @@
   "license": "MIT",
   "devDependencies": {
     "@ddu6/stc": "^0.28.0",
-    "@ddu6/stui": "^0.15.11",
-    "st-std": "^0.31.3",
+    "@ddu6/stui": "^0.15.12",
+    "st-std": "^0.31.4",
     "stdn": "^0.7.0",
-    "typescript": "^4.5.4",
-    "webpack": "^5.66.0",
-    "webpack-cli": "^4.9.1"
+    "typescript": "^4.7.3",
+    "webpack": "^5.73.0",
+    "webpack-cli": "^4.9.2"
   },
   "dependencies": {
     "@ddu6/importer": "^0.0.3"
