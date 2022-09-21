@@ -100,6 +100,9 @@ export async function createViewer() {
         }
     }
     function loadCompileResult({ compiler, documentFragment }) {
+        if (compiler.stop) {
+            return false;
+        }
         if (compiler.context.title.length > 0) {
             document.title = compiler.context.title;
         }
@@ -108,20 +111,22 @@ export async function createViewer() {
         nav.innerHTML = '';
         nav.append(headingTreeToElement(extractHeadingTree(compiler.context, compiler.base.unitToInlinePlainString)));
         env.compiler = compiler;
+        return true;
     }
     async function load(urls) {
         element.classList.add('loading');
         const { compileURLs } = await getMod('stc');
-        loadCompileResult(await compileURLs(urls, {
+        const result = loadCompileResult(await compileURLs(urls, {
             builtInTagToUnitCompiler: await getMod('ucs'),
             style
         }));
         element.classList.remove('loading');
+        return result;
     }
     async function loadString(string, url) {
         element.classList.add('loading');
         const { compile } = await getMod('stc');
-        loadCompileResult(await compile([{
+        const result = loadCompileResult(await compile([{
                 value: string,
                 url
             }], {
@@ -129,6 +134,7 @@ export async function createViewer() {
             style
         }));
         element.classList.remove('loading');
+        return result;
     }
     async function autoLoad() {
         const { dataset } = document.documentElement;
@@ -158,10 +164,14 @@ export async function createViewer() {
         else
             (focusId = dataset.focusId);
         if (string !== undefined) {
-            await loadString(string, dir);
+            if (!await loadString(string, dir)) {
+                return;
+            }
         }
         else if (src !== undefined) {
-            await load([src]);
+            if (!await load([src])) {
+                return;
+            }
         }
         await focus(dir, focusURL, focusPositionStr, focusId);
     }

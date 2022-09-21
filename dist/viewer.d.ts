@@ -13,7 +13,7 @@ export declare function createViewer(): Promise<{
         compiler?: Compiler | undefined;
     };
     focus: (dir: string, focusURL?: string, focusPositionStr?: string, focusId?: string) => Promise<void>;
-    load: (urls: string[]) => Promise<void>;
-    loadString: (string: string, url: string) => Promise<void>;
+    load: (urls: string[]) => Promise<boolean>;
+    loadString: (string: string, url: string) => Promise<boolean>;
     autoLoad: () => Promise<void>;
 }>;
