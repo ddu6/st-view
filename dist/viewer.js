@@ -88,6 +88,7 @@ export async function createViewer() {
             addEventListener('keydown', l, { once: true });
             addEventListener('touchmove', l, { once: true });
             addEventListener('wheel', l, { once: true });
+            addEventListener('popstate', l, { once: true });
             for (let i = 0; i < 100; i++) {
                 if (operated) {
                     break;
