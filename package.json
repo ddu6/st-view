@@ -12,7 +12,7 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "@ddu6/stc": "^0.28.4",
+    "@ddu6/stc": "^0.28.5",
     "@ddu6/stui": "^0.15.12",
     "st-std": "^0.31.5",
     "stdn": "^0.7.0",
