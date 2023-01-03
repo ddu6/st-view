@@ -1,4 +1,4 @@
-import {init} from '../stui@0.15.12/mod.js'
+import {init} from '../stui@0.31.8/mod.js'
 import {createViewer} from './mod.js'
 init()
 const style = document.createElement('style')
